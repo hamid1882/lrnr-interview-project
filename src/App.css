@@ -5,3 +5,27 @@
 .input-custom-styles:focus {
   outline: none;
 }
+
+.drawer-custom-styles {
+  width: 25%;
+  height: 100%;
+  margin-left: 1em;
+  overflow-y: scroll;
+  box-shadow: 4px 3px 4px 3px gray;
+}
+
+.drawer-collapse {
+  transform: translateX(-150%);
+  transition: all 0.8s;
+}
+
+.drawer-open {
+  transform: translateX(0%);
+  transition: all 0.4s;
+}
+
+@media only screen and (max-width: 600px) {
+  .drawer-custom-styles {
+    width: 70%;
+  }
+}
