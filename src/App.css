@@ -8,15 +8,18 @@
 
 .drawer-custom-styles {
   width: 25%;
-  height: 100%;
+  height: 100vmin;
   margin-left: 1em;
   overflow-y: scroll;
   box-shadow: 4px 3px 4px 3px gray;
 }
 
 .drawer-collapse {
+  position: absolute;
+  top: 150px;
   transform: translateX(-150%);
   transition: all 0.8s;
+  z-index: 999;
 }
 
 .drawer-open {
@@ -24,8 +27,15 @@
   transition: all 0.4s;
 }
 
+.drawer-active-file {
+  background-color: #607e9b;
+}
+
 @media only screen and (max-width: 600px) {
   .drawer-custom-styles {
     width: 70%;
+    position: absolute;
+    top: 27%;
+    z-index: 999;
   }
 }

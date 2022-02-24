@@ -1,25 +1,12 @@
 import React, { Component } from "react";
 
 class Navbar extends Component {
-  constructor(props) {
-    super(props);
-    this.handleCollapseDrawer = this.handleCollapseDrawer.bind(this);
-  }
-
-  handleCollapseDrawer() {
-    if (this.props.isDrawerOpen === true) {
-      this.props.setIsDrawerOpen(false);
-    } else {
-      this.props.setIsDrawerOpen(true);
-    }
-  }
-
   render() {
     return (
       <div className={`row justify-content-between align-items-center p-2`}>
         <button
-          className="btn shadow-none col d-flex justify-content-start mx-2"
-          onClick={this.handleCollapseDrawer}
+          className="btn shadow-none col d-flex justify-content-center mx-2"
+          onClick={this.props.handleDrawerClick}
         >
           <i className="fas fa-align-left"></i>
         </button>

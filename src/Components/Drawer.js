@@ -5,13 +5,23 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem from "@mui/lab/TreeItem";
 
 export default class Drawer extends Component {
+  constructor() {
+    super();
+    this.state = { currentActive: "Documents" };
+  }
   render() {
+    const handleCurrentFile = (current) => {
+      const currentFile = current.target.innerHTML;
+      this.setState({ currentActive: currentFile });
+    };
+
+    const isDrawerOpen = this.props.isDrawerOpen;
+    const collapseDrawer = isDrawerOpen ? "drawer-open" : "drawer-collapse";
+    // const currentActive = this.state.currentActive;
+    // const selectCurrentStyle = "drawer-active-file";
+
     return (
-      <div
-        className={`drawer-custom-styles ${
-          this.props.isDrawerOpen ? "drawer-open" : "drawer-collapse"
-        }`}
-      >
+      <div className={`drawer-custom-styles bg-light ${collapseDrawer}`}>
         <TreeView
           aria-label="file system navigator"
           defaultCollapseIcon={<ExpandMoreIcon />}
@@ -19,24 +29,51 @@ export default class Drawer extends Component {
           sx={{ height: 850, flexGrow: 1, maxWidth: 450, overflowY: "auto" }}
         >
           <TreeItem nodeId="1" label="Applications">
-            <TreeItem nodeId="2" label="Calendar" />
-          </TreeItem>
-          <TreeItem nodeId="5" label="Documents">
-            <TreeItem nodeId="10" label="OSS" />
-            <TreeItem nodeId="6" label="MUI">
-              <TreeItem nodeId="8" label="index.js" />
+            <TreeItem nodeId="2" label="Documents">
+              <TreeItem
+                nodeId="3"
+                label="React notes.txt"
+                onClick={handleCurrentFile}
+              ></TreeItem>
+              <TreeItem
+                nodeId="3.1"
+                label="Angular notes.txt"
+                onClick={handleCurrentFile}
+              ></TreeItem>
             </TreeItem>
-          </TreeItem>
-          <TreeItem nodeId="11" label="media">
-            <TreeItem nodeId="12" label="OSS" />
-            <TreeItem nodeId="13" label="MUI">
-              <TreeItem nodeId="14" label="index.js" />
+            {/* Pictures */}
+            <TreeItem nodeId="4" label="Pictures">
+              <TreeItem
+                nodeId="5"
+                label="Cat image.png"
+                onClick={handleCurrentFile}
+              ></TreeItem>
+              <TreeItem
+                nodeId="5.1"
+                label="Dog image.png"
+                onClick={handleCurrentFile}
+              ></TreeItem>
             </TreeItem>
-          </TreeItem>
-          <TreeItem nodeId="15" label="pictures">
-            <TreeItem nodeId="17" label="OSS" />
-            <TreeItem nodeId="16" label="MUI">
-              <TreeItem nodeId="18" label="index.js" />
+            {/* Videos */}
+            <TreeItem nodeId="6" label="Videos">
+              <TreeItem
+                nodeId="6.1"
+                label="funny video.mp4"
+                onClick={handleCurrentFile}
+              ></TreeItem>
+              <TreeItem
+                nodeId="6.2"
+                label="horror.mp4"
+                onClick={handleCurrentFile}
+              ></TreeItem>
+            </TreeItem>
+            {/* editor */}
+            <TreeItem nodeId="7" label="TextEditor">
+              <TreeItem
+                nodeId="7.1"
+                label="Texteditor"
+                onClick={handleCurrentFile}
+              ></TreeItem>
             </TreeItem>
           </TreeItem>
         </TreeView>
