@@ -16,7 +16,7 @@
 
 .drawer-collapse {
   position: absolute;
-  top: 150px;
+  top: 165px;
   transform: translateX(-150%);
   transition: all 0.8s;
   z-index: 999;
@@ -37,5 +37,7 @@
     position: absolute;
     top: 27%;
     z-index: 999;
+    margin-left: 0;
+    height: 100vmax;
   }
 }

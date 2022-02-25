@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import Drawer from "./Components/Drawer";
 import Navbar from "./Components/Navbar";
 import RenderOptions from "./Components/RenderOptions";
+import EditorContainer from "./Components/EditorContainer";
 import "./App.css";
-import Editor from "./Components/Editor";
 
 class App extends Component {
   constructor() {
@@ -32,8 +32,11 @@ class App extends Component {
         />
         <RenderOptions />
         <div className="mx-auto d-flex gap-2 p-2">
-          <Drawer isDrawerOpen={isDrawerOpen} />
-          <Editor />
+          <Drawer
+            isDrawerOpen={isDrawerOpen}
+            handleDrawerClick={handleDrawerClick}
+          />
+          <EditorContainer />
         </div>
       </>
     );
