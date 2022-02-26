@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+// import { useSelector } from "react-redux";
 import { Editor, EditorState } from "draft-js";
 import { convertToRaw } from "draft-js";
 import "draft-js/dist/Draft.css";
+// import { selectCurrentValue } from "../Features/EditorSlice";
 
 const styleMap = {
   STRIKETHROUGH: {
@@ -12,9 +14,17 @@ const styleMap = {
 export default class EditorContainer extends Component {
   constructor() {
     super();
-    this.state = { editorState: EditorState.createEmpty() };
+    this.state = { editorState: EditorState.createEmpty(), reduxState: {} };
     this.onChange = (editorState) => this.setState({ editorState });
   }
+
+  // DummyView = () => {
+  //   const reducer = useSelector(selectCurrentValue);
+  //   useEffect(() => {
+  //     this.setState({ reduxState: reducer });
+  //   }, []);
+  //   return null;
+  // };
 
   render() {
     const blocks = convertToRaw(
@@ -31,6 +41,7 @@ export default class EditorContainer extends Component {
             editorState={this.state.editorState}
             onChange={this.onChange}
             customStyleMap={styleMap}
+            placeholder="Write something!"
           />
         </div>
       </div>
