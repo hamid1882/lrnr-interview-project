@@ -3,12 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const allDocuments = [
   {
     name: "container-node",
-    nodeId: 1,
+    nodeId: "Collection 1",
     label: "Collection 1",
+    id: 1,
     leaf: [
       {
-        nodeId: 1.1,
-        label: `Collection 1.1`,
+        nodeId: "File 1",
+        label: "File 1",
+        id: 1,
       },
     ],
   },
@@ -29,8 +31,7 @@ const EditorSlice = createSlice({
       state.documents = state.documents.concat(action.payload);
     },
     addNewFile: (state, action) => {
-      state.documents[0].leaf.push(action.payload);
-      state.documents = state.documents;
+      // state.files = state.files.concat(action.payload);
     },
   },
 });

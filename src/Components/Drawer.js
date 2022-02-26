@@ -1,14 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TreeView from "@mui/lab/TreeView";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem from "@mui/lab/TreeItem";
-import {
-  selectAllDocuments,
-  addNewCollection,
-  addNewFile,
-} from "../Features/EditorSlice";
+import { selectAllDocuments, addNewCollection } from "../Features/EditorSlice";
 
 const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
   const allData = useSelector(selectAllDocuments);
@@ -20,36 +16,23 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
     setCurrentActive(currentFile);
   };
 
-  // const lastElementId = allData[allData.length - 1].nodeId;
-  // const lastLeafId = allData[allData.length - 1].leaf.map(
-  //   (value) => value.nodeId
-  // );
+  const dispatch = useDispatch();
 
-  let lastElementId = 1;
-  let lastLeafId = 1.1;
+  let currentData = allData[allData.length - 1].id;
 
   const insertThisData = {
     name: "container-node",
-    nodeId: lastElementId++,
-    label: `Collection ${lastElementId++}`,
+    nodeId: `Collection ${currentData + 1}`,
+    label: `Collection ${currentData + 1}`,
+    id: currentData + 1,
     leaf: [
       {
-        nodeId: lastLeafId++,
-        label: `Collection ${lastLeafId++}`,
+        nodeId: "File 1",
+        label: "File 1",
+        id: 1,
       },
     ],
   };
-
-  // const newRef = useRef();
-
-  // const addFileData = {
-  //   nodeId: parseFloat(lastLeafId) + "." + 1,
-  //   label: `new document ${lastLeafId}`,
-  // };
-
-  // console.log(addFileData);
-
-  const dispatch = useDispatch();
 
   // Add new collection
   const handleAddNewCollection = () => {
@@ -57,18 +40,15 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
   };
 
   // add a new file
-  const handleNewFile = (e) => {
+  const handleNewFile = () => {
     // console.log(e);
-    dispatch(addNewFile({ nodeId: 2, label: "Document 1.1.2" }));
-    console.log("add, add, add");
+    // dispatch(addNewFile({ nodeId: "Collection 1.4", label: "Document 1.1.2" }));
   };
 
   // delete existing file
   const handleDeleteFile = () => {
     console.log("delete, delete, delete");
   };
-
-  console.log(allData);
 
   // drawer transition style
   const collapseDrawer = isDrawerOpen ? "drawer-open" : "drawer-collapse";
@@ -99,13 +79,13 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
           {allData &&
             allData.map((value, idx) => (
               <TreeItem
-                nodeId={value.nodeId.toString()}
+                nodeId={value.nodeId}
                 label={value.label}
                 collapseIcon={<ExpandMoreIcon />}
                 endIcon={<i className="fa fa-plus"></i>}
-                key={value.nodeId}
+                key={idx}
               >
-                <div className="shadow mb-2">
+                <div className="drawer-btn">
                   <button className="btn shadow-none" onClick={handleNewFile}>
                     <i className="fa fa-plus"></i>
                   </button>
@@ -116,15 +96,14 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                     <i className="fa fa-remove"></i>
                   </button>
                 </div>
-                {value.leaf.map((leafValue, idx) => (
-                  <div key={leafValue.nodeId}>
+                {value.leaf &&
+                  value.leaf.map((value, idx) => (
                     <TreeItem
-                      nodeId={parseFloat(leafValue.nodeId).toString()}
-                      label={leafValue.label}
-                      onClick={handleCurrentFile}
+                      nodeId={value.nodeId}
+                      label={value.label}
+                      key={idx}
                     ></TreeItem>
-                  </div>
-                ))}
+                  ))}
               </TreeItem>
             ))}
         </TreeItem>

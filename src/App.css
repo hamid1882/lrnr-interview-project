@@ -7,7 +7,7 @@
 }
 
 .drawer-custom-styles {
-  width: 25%;
+  width: 35vmax;
   height: 100vmin;
   margin-left: 1em;
   overflow-y: scroll;
@@ -29,6 +29,23 @@
 
 .drawer-active-file {
   background-color: #607e9b;
+}
+
+.drawer-btn {
+  position: relative;
+  top: -22px;
+  left: 70%;
+  width: 65px;
+  height: 20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: -15px;
+}
+
+.drawer-btn > button > i {
+  margin-right: -4px;
+  margin-left: -10px;
 }
 
 @media only screen and (max-width: 600px) {
