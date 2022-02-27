@@ -30,14 +30,24 @@ const EditorSlice = createSlice({
     addNewCollection: (state, action) => {
       state.documents = state.documents.concat(action.payload);
     },
+    deleteCollection: (state, action) => {
+      const filteredDoc = state.documents.filter(
+        (docs) => docs.id !== action.payload
+      );
+      state.documents = filteredDoc;
+    },
     addNewFile: (state, action) => {
-      // state.files = state.files.concat(action.payload);
+      state.documents[action.payload.id].leaf.push(action.payload.addFile);
     },
   },
 });
 
-export const { showAllDocument, addNewCollection, addNewFile } =
-  EditorSlice.actions;
+export const {
+  showAllDocument,
+  addNewCollection,
+  addNewFile,
+  deleteCollection,
+} = EditorSlice.actions;
 
 export const selectAllDocuments = (state) => state.EditorSlice.documents;
 
