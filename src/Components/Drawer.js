@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TreeView from "@mui/lab/TreeView";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -16,6 +16,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
 
   // eslint-disable-next-line
   const [currentActive, setCurrentActive] = useState("Documents");
+  const [currentRefId, setCurrentRefId] = useState(0);
 
   // eslint-disable-next-line
   const handleCurrentFile = (current) => {
@@ -23,11 +24,15 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
     setCurrentActive(currentFile);
   };
 
+  const containerRef = useRef();
+
   const dispatch = useDispatch();
 
   let currentData = allData[allData.length - 1].id;
-  // console.log(currentData);
-  // let currentFile = currentData
+
+  let currentFile = allData.map((value) => value.leaf);
+
+  const currentFileId = currentFile[0][currentFile[0].length - 1].id;
 
   const insertThisData = {
     name: "container-node",
@@ -36,14 +41,13 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
     id: currentData + 1,
     leaf: [
       {
-        nodeId: "File 1",
-        label: "File 1",
-        id: 1,
+        nodeId: `File ${currentFileId}`,
+        label: `File ${currentFileId}`,
+        id: currentFileId,
       },
     ],
   };
 
-  const containerRef = useRef();
   // Add new collection
   const handleAddNewCollection = () => {
     dispatch(addNewCollection(insertThisData));
@@ -55,7 +59,11 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
     dispatch(
       addNewFile({
         id: currentContainer - 1,
-        addFile: { nodeId: "Collection 1.4", label: "Document 1.1.2" },
+        addFile: {
+          nodeId: `File ${currentFileId + 1}`,
+          label: `File ${currentFileId + 1}`,
+          id: currentFileId + 1,
+        },
       })
     );
   };
@@ -63,15 +71,15 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
   // delete existing file
   const handleDeleteFile = () => {
     const currentContainer = Number(containerRef.current.id);
-    console.log(currentData);
-    // if (allData.length > 1) {
-    //   dispatch(deleteCollection(currentData));
-    // }
+    console.log(currentContainer);
+    if (currentContainer > 1) {
+      dispatch(deleteCollection(currentContainer));
+    }
   };
 
   const leafRef = useRef();
   // delete single file with id
-  const deleteSingleFile = () => {
+  const deleteSingleFile = (e) => {
     console.log(leafRef.current.id);
   };
 
@@ -107,7 +115,6 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                 nodeId={value.nodeId}
                 label={value.label}
                 collapseIcon={<ExpandMoreIcon />}
-                endIcon={<i className="fa fa-plus"></i>}
                 key={idx}
               >
                 <div className="drawer-btn">
@@ -127,25 +134,20 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                   </button>
                 </div>
                 {value.leaf &&
-                  value.leaf.map((value, idx) => (
-                    <div key={idx}>
+                  value.leaf.map((leafValue, idx) => (
+                    <div key={leafValue.id}>
                       <TreeItem
-                        nodeId={value.nodeId}
-                        label={value.label}
+                        nodeId={leafValue.nodeId}
+                        label={leafValue.label}
                       ></TreeItem>
                       <div className="drawer-btn">
-                        <button
-                          className="btn shadow-none"
-                          onClick={handleNewFile}
-                          ref={containerRef}
-                          id={value.id}
-                        >
+                        <button className="btn shadow-none">
                           <i className="fa fa-clone"></i>
                         </button>
                         <button
                           className="btn shadow-none"
-                          id={value.id}
                           onClick={deleteSingleFile}
+                          id={leafValue.id}
                           ref={leafRef}
                         >
                           <i className="fa fa-trash"></i>
