@@ -8,6 +8,7 @@ import {
   selectAllDocuments,
   addNewCollection,
   deleteCollection,
+  deleteSingleFile,
   addNewFile,
 } from "../Features/EditorSlice";
 
@@ -16,34 +17,32 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
 
   // eslint-disable-next-line
   const [currentActive, setCurrentActive] = useState("Documents");
-  // const [currentRefId, setCurrentRefId] = useState(0);
+  const [selected, setSelected] = React.useState([]);
 
-  // eslint-disable-next-line
-  const handleCurrentFile = (current) => {
-    const currentFile = current.target.innerHTML;
-    setCurrentActive(currentFile);
+  // console.log(Number(selected));
+
+  const handleCurrentFile = () => {
+    // console.log(Number(selected));
   };
 
-  const containerRef = useRef();
+  const handleSelect = (event, nodeIds) => {
+    setSelected(nodeIds);
+  };
+
+  const currentContainer = allData[allData.length - 1].nodeId;
 
   const dispatch = useDispatch();
 
-  let currentData = allData[allData.length - 1].id;
-
-  let currentFile = allData.map((value) => value.leaf);
-
-  const currentFileId = currentFile[0][currentFile[0].length - 1].id;
-
   const insertThisData = {
     name: "container-node",
-    nodeId: `Collection ${currentData + 1}`,
-    label: `Collection ${currentData + 1}`,
-    id: currentData + 1,
+    nodeId: currentContainer + 1,
+    label: `Collection ${currentContainer + 1}`,
+    id: currentContainer + 1,
     leaf: [
       {
-        nodeId: `File ${currentFileId}`,
-        label: `File ${currentFileId}`,
-        id: currentFileId,
+        nodeId: 2.1,
+        label: `File 10.1`,
+        id: 5,
       },
     ],
   };
@@ -53,34 +52,36 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
     dispatch(addNewCollection(insertThisData));
   };
 
+  const containerRef = useRef();
+
   // add a new file
   const handleNewFile = () => {
-    const currentContainer = Number(containerRef.current.id);
+    const currentContainerId = parseFloat(selected) + 1;
     dispatch(
       addNewFile({
-        id: currentContainer - 1,
+        id: containerRef.current.id - 1,
         addFile: {
-          nodeId: `File ${currentFileId + 1}`,
-          label: `File ${currentFileId + 1}`,
-          id: currentFileId + 1,
+          nodeId: currentContainerId,
+          label: `File ${currentContainerId}`,
+          id: 2,
         },
       })
     );
   };
 
+  console.log(selected);
+
   // delete existing file
   const handleDeleteFile = () => {
-    const currentContainer = Number(containerRef.current.id);
-    console.log(currentContainer);
-    if (currentContainer > 1) {
-      dispatch(deleteCollection(currentContainer));
-    }
+    console.log("delete collection");
+    dispatch(deleteCollection(Number(selected)));
   };
 
-  const leafRef = useRef();
   // delete single file with id
-  const deleteSingleFile = (e) => {
-    console.log(leafRef.current.id);
+  const handleDeleteSingleFile = () => {
+    if (parseFloat(selected) > 1.1) {
+      dispatch(deleteSingleFile(parseFloat(selected)));
+    }
   };
 
   // drawer transition style
@@ -107,12 +108,14 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
         sx={{ height: 850, flexGrow: 1, maxWidth: 450, overflowY: "auto" }}
+        onNodeSelect={handleSelect}
+        selected={selected}
       >
         <TreeItem nodeId="0" label="All Documents">
           {allData &&
             allData.map((value, idx) => (
               <TreeItem
-                nodeId={value.nodeId}
+                nodeId={String(value.nodeId)}
                 label={value.label}
                 collapseIcon={<ExpandMoreIcon />}
                 key={idx}
@@ -121,7 +124,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                   <button
                     className="btn shadow-none"
                     onClick={handleNewFile}
-                    id={value.id}
+                    id={value.nodeId}
                     ref={containerRef}
                   >
                     <i className="fa fa-plus"></i>
@@ -135,10 +138,11 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                 </div>
                 {value.leaf &&
                   value.leaf.map((leafValue, idx) => (
-                    <div key={leafValue.id}>
+                    <div key={leafValue.nodeId}>
                       <TreeItem
-                        nodeId={leafValue.nodeId}
+                        nodeId={String(leafValue.nodeId)}
                         label={leafValue.label}
+                        onClick={handleCurrentFile}
                       ></TreeItem>
                       <div className="drawer-btn">
                         <button className="btn shadow-none">
@@ -146,9 +150,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                         </button>
                         <button
                           className="btn shadow-none"
-                          onClick={deleteSingleFile}
-                          id={leafValue.id}
-                          ref={leafRef}
+                          onClick={handleDeleteSingleFile}
                         >
                           <i className="fa fa-trash"></i>
                         </button>

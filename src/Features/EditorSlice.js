@@ -3,14 +3,19 @@ import { createSlice } from "@reduxjs/toolkit";
 const allDocuments = [
   {
     name: "container-node",
-    nodeId: "Collection 1",
+    nodeId: 1,
     label: "Collection 1",
     id: 1,
     leaf: [
       {
-        nodeId: "File 1",
+        nodeId: 1.1,
         label: "File 1",
         id: 1,
+      },
+      {
+        nodeId: 1.2,
+        label: "File 2",
+        id: 2,
       },
     ],
   },
@@ -39,6 +44,12 @@ const EditorSlice = createSlice({
     addNewFile: (state, action) => {
       state.documents[action.payload.id].leaf.push(action.payload.addFile);
     },
+    deleteSingleFile: (state, action) => {
+      const mappedLeaf = state.documents[0].leaf.filter(
+        (val) => val.nodeId !== action.payload
+      );
+      state.documents[0].leaf = mappedLeaf;
+    },
   },
 });
 
@@ -47,6 +58,7 @@ export const {
   addNewCollection,
   addNewFile,
   deleteCollection,
+  deleteSingleFile,
 } = EditorSlice.actions;
 
 export const selectAllDocuments = (state) => state.EditorSlice.documents;
