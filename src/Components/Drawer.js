@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TreeView from "@mui/lab/TreeView";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -16,7 +16,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
 
   // eslint-disable-next-line
   const [currentActive, setCurrentActive] = useState("Documents");
-  const [currentRefId, setCurrentRefId] = useState(0);
+  // const [currentRefId, setCurrentRefId] = useState(0);
 
   // eslint-disable-next-line
   const handleCurrentFile = (current) => {
