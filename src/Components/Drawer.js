@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TreeView from "@mui/lab/TreeView";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -8,6 +8,7 @@ import {
   selectAllDocuments,
   addNewCollection,
   deleteCollection,
+  renameCollection,
   deleteSingleFile,
   addNewFile,
 } from "../Features/EditorSlice";
@@ -18,11 +19,15 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
   // eslint-disable-next-line
   const [currentActive, setCurrentActive] = useState("Documents");
   const [selected, setSelected] = React.useState([]);
+  const [isOpenChangeName, setIsOpenChangeName] = useState(false);
+  const [isOpenChangeLeaf, setIsOpenChangeLeaf] = useState(false);
 
   // console.log(Number(selected));
 
-  const handleCurrentFile = () => {
-    // console.log(Number(selected));
+  const leafRef = useRef();
+
+  const handleCurrentFile = (e) => {
+    console.log(selected);
   };
 
   const handleSelect = (event, nodeIds) => {
@@ -40,8 +45,8 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
     id: currentContainer + 1,
     leaf: [
       {
-        nodeId: 2.1,
-        label: `File 10.1`,
+        nodeId: currentContainer + 1 + 0.1,
+        label: `File ${currentContainer + 1 + ".1"}`,
         id: 5,
       },
     ],
@@ -56,33 +61,112 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
 
   // add a new file
   const handleNewFile = () => {
-    const currentContainerId = parseFloat(selected) + 1;
+    const currentParentId = Number(containerRef.current.id);
+    const currentContainerNodeId =
+      allData[currentParentId - 1].leaf[
+        allData[currentParentId - 1].leaf.length - 1
+      ].nodeId;
+
+    const incrementCurrentId = currentContainerNodeId + 0.1;
+    const toBeFixed =
+      incrementCurrentId >= 1.9
+        ? incrementCurrentId.toFixed(2)
+        : incrementCurrentId.toFixed(1);
+
     dispatch(
       addNewFile({
-        id: containerRef.current.id - 1,
+        id: currentParentId - 1,
         addFile: {
-          nodeId: currentContainerId,
-          label: `File ${currentContainerId}`,
+          nodeId: parseFloat(toBeFixed),
+          label: `${currentParentId} ${parseFloat(toBeFixed)}`,
           id: 2,
         },
       })
     );
   };
 
-  console.log(selected);
-
   // delete existing file
   const handleDeleteFile = () => {
-    console.log("delete collection");
-    dispatch(deleteCollection(Number(selected)));
+    if (Number(selected) > 1) {
+      dispatch(deleteCollection(Number(selected)));
+    }
   };
 
   // delete single file with id
   const handleDeleteSingleFile = () => {
-    if (parseFloat(selected) > 1.1) {
-      dispatch(deleteSingleFile(parseFloat(selected)));
+    const currentParentId = Number(containerRef.current.id);
+    if (parseFloat(selected) > currentParentId + 0.1) {
+      dispatch(
+        deleteSingleFile({
+          id: currentParentId - 1,
+          currentFile: parseFloat(selected),
+        })
+      );
     }
   };
+
+  // rename collection
+  const handleRenameCollection = () => {
+    if (isOpenChangeName === false) {
+      setIsOpenChangeName(true);
+    } else {
+      setIsOpenChangeName(false);
+    }
+  };
+
+  const [renameCollectionValue, setRenameCollectionValue] = useState("");
+
+  const handleRenameChange = (e) => {
+    e.preventDefault();
+    setRenameCollectionValue(e.target.value);
+  };
+
+  const handleSaveCollectionName = () => {
+    const currentParentId = Number(containerRef.current.id);
+    dispatch(
+      renameCollection({
+        id: currentParentId - 1,
+        newName: renameCollectionValue,
+      })
+    );
+    setIsOpenChangeName(false);
+  };
+
+  const handleOnKeyPress = (event) => {
+    const currentParentId = Number(containerRef.current.id);
+    if (event.key === "Enter") {
+      dispatch(
+        renameCollection({
+          id: currentParentId - 1,
+          newName: renameCollectionValue,
+        })
+      );
+      setIsOpenChangeName(false);
+    }
+  };
+
+  // Leaf rename
+  const [renameLeafValue, setRenameLeafValue] = useState("");
+
+  const leafInputRef = useRef();
+
+  const handleRenameLeaf = () => {
+    if (isOpenChangeLeaf === false) {
+      setIsOpenChangeLeaf(true);
+    } else {
+      setIsOpenChangeLeaf(false);
+    }
+  };
+
+  const handleSaveLeafName = (e) => {
+    setRenameLeafValue(e.target.value);
+  };
+
+  useEffect(() => {
+    if (isOpenChangeLeaf === true) {
+      leafInputRef.current.focus();
+    }
+  }, [isOpenChangeLeaf]);
 
   // drawer transition style
   const collapseDrawer = isDrawerOpen ? "drawer-open" : "drawer-collapse";
@@ -120,7 +204,11 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                 collapseIcon={<ExpandMoreIcon />}
                 key={idx}
               >
-                <div className="drawer-btn">
+                <div
+                  className={`drawer-btn ${
+                    Number(selected) === value.nodeId ? "d-flex" : "d-none"
+                  }`}
+                >
                   <button
                     className="btn shadow-none"
                     onClick={handleNewFile}
@@ -131,10 +219,50 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                   </button>
                   <button
                     className="btn shadow-none"
+                    onClick={handleRenameCollection}
+                    id={value.nodeId}
+                    ref={containerRef}
+                  >
+                    <i className="fa fa-edit"></i>
+                  </button>
+                  <button
+                    className="btn shadow-none"
                     onClick={handleDeleteFile}
+                    id={value.nodeId}
+                    ref={containerRef}
                   >
                     <i className="fa fa-trash"></i>
                   </button>
+                </div>
+
+                <div
+                  className={`p-2 collection-rename-container ${
+                    isOpenChangeName && Number(selected) === value.nodeId
+                      ? "d-block"
+                      : "d-none"
+                  }`}
+                >
+                  <input
+                    type="text"
+                    className="rounde"
+                    onChange={handleRenameChange}
+                    value={renameCollectionValue}
+                    onKeyPress={handleOnKeyPress}
+                  />
+                  <div className="d-flex gap-2 my-2">
+                    <button
+                      className="btn btn-success shadow-none"
+                      onClick={handleSaveCollectionName}
+                    >
+                      Done
+                    </button>
+                    <button
+                      className="btn btn-danger shadow-none"
+                      onClick={handleRenameCollection}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
                 {value.leaf &&
                   value.leaf.map((leafValue, idx) => (
@@ -142,9 +270,24 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                       <TreeItem
                         nodeId={String(leafValue.nodeId)}
                         label={leafValue.label}
+                        ContentProps={{ name: "hamid" }}
                         onClick={handleCurrentFile}
+                        ref={leafRef}
+                        id={leafValue.label}
                       ></TreeItem>
-                      <div className="drawer-btn">
+                      <div
+                        className={`drawer-btn justify-content-center align-items-center ${
+                          Number(selected) === leafValue.nodeId
+                            ? "d-flex "
+                            : "d-none"
+                        }`}
+                      >
+                        <button
+                          className="btn shadow-none"
+                          onClick={handleRenameLeaf}
+                        >
+                          <i className="fa fa-edit"></i>
+                        </button>
                         <button className="btn shadow-none">
                           <i className="fa fa-clone"></i>
                         </button>
@@ -153,6 +296,30 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                           onClick={handleDeleteSingleFile}
                         >
                           <i className="fa fa-trash"></i>
+                        </button>
+                      </div>
+                      <div
+                        className={`p-2 collection-rename-leaf ${
+                          isOpenChangeLeaf &&
+                          Number(selected) === leafValue.nodeId
+                            ? "d-block"
+                            : "d-none"
+                        }`}
+                      >
+                        <input
+                          type="text"
+                          className=" border-0 shadow-none"
+                          onChange={handleSaveLeafName}
+                          value={renameLeafValue}
+                          onKeyPress={handleOnKeyPress}
+                          ref={leafInputRef}
+                        />
+                        <button
+                          className={`btn shadow-none btn-check-rename ${
+                            renameLeafValue.length > 1 ? "d-block" : "d-none"
+                          }`}
+                        >
+                          <i className="fa fa-check text-success"></i>
                         </button>
                       </div>
                     </div>

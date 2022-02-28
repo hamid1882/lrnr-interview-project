@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { useState, useRef, useEffect } from "react";
 // import { useSelector } from "react-redux";
-import { Editor, EditorState } from "draft-js";
+import { Editor, EditorState, RichUtils, Immutable } from "draft-js";
 import { convertToRaw } from "draft-js";
 import "draft-js/dist/Draft.css";
 // import { selectCurrentValue } from "../Features/EditorSlice";
@@ -11,40 +11,80 @@ const styleMap = {
   },
 };
 
-export default class EditorContainer extends Component {
-  constructor() {
-    super();
-    this.state = { editorState: EditorState.createEmpty(), reduxState: {} };
-    this.onChange = (editorState) => this.setState({ editorState });
-  }
+const EditorContainer = () => {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [currentAligned, setCurrentAligned] = useState("left");
 
-  // DummyView = () => {
-  //   const reducer = useSelector(selectCurrentValue);
-  //   useEffect(() => {
-  //     this.setState({ reduxState: reducer });
-  //   }, []);
-  //   return null;
-  // };
+  const contentState = editorState.getCurrentContent();
 
-  render() {
-    const blocks = convertToRaw(
-      this.state.editorState.getCurrentContent()
-    ).blocks;
-    // eslint-disable-next-line
-    const currentText = blocks.map((value) => value.text);
+  const editorRef = useRef();
 
-    return (
-      <div className="w-100 vh-100 border p-2 mx-3">
-        <h3 className="text-center">WYSIWYG Editor</h3>
-        <div className="container mx-auto">
-          <Editor
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-            customStyleMap={styleMap}
-            placeholder="Write something!"
-          />
-        </div>
+  const _onBoldClick = () => {
+    setEditorState(RichUtils.toggleInlineStyle(editorState, "BOLD"));
+  };
+
+  const _onItalicClick = () => {
+    setEditorState(RichUtils.toggleInlineStyle(editorState, "ITALIC"));
+  };
+
+  const _onUnderlineClick = () => {
+    setEditorState(RichUtils.toggleInlineStyle(editorState, "UNDERLINE"));
+  };
+  const _onCenterAlign = () => {
+    setCurrentAligned("center");
+    editorRef.current.focus();
+  };
+  const _onRightAlign = () => {
+    setCurrentAligned("right");
+    editorRef.current.focus();
+  };
+  const _onLeftAlign = () => {
+    setCurrentAligned("left");
+    editorRef.current.focus();
+  };
+
+  useEffect(() => {
+    editorRef.current.focus();
+  }, []);
+
+  // const inputValue = convertToRaw(editorState.getCurrentContent()).blocks;
+
+  return (
+    <div className="container mx-auto w-75 vh-100 border p-2 mx-3">
+      <h3 className="text-center">WYSIWYG Editor</h3>
+      <div className="d-flex justify-content-center gap-2 my-2">
+        <button onClick={_onBoldClick} className="btn shadow-none">
+          <i className="fa fa-bold"></i>
+        </button>
+        <button onClick={_onItalicClick} className="btn shadow-none">
+          <i className="fa fa-italic"></i>
+        </button>
+        <button onClick={_onUnderlineClick} className="btn shadow-none">
+          <i className="fa fa-underline"></i>
+        </button>
+        <button onClick={_onLeftAlign} className="btn shadow-none">
+          <i className="fa fa-align-left"></i>
+        </button>
+        <button onClick={_onCenterAlign} className="btn shadow-none">
+          <i className="fa fa-align-center"></i>
+        </button>
+        <button onClick={_onRightAlign} className="btn shadow-none">
+          <i className="fa fa-align-right"></i>
+        </button>
       </div>
-    );
-  }
-}
+
+      <div className="container mx-auto">
+        <Editor
+          editorState={editorState}
+          onChange={setEditorState}
+          customStyleMap={styleMap}
+          placeholder="Write something!"
+          ref={editorRef}
+          textAlignment={currentAligned}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default EditorContainer;

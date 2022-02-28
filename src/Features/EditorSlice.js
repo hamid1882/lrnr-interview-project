@@ -9,12 +9,12 @@ const allDocuments = [
     leaf: [
       {
         nodeId: 1.1,
-        label: "File 1",
+        label: "File 1.1",
         id: 1,
       },
       {
         nodeId: 1.2,
-        label: "File 2",
+        label: "File 1.2",
         id: 2,
       },
     ],
@@ -41,14 +41,17 @@ const EditorSlice = createSlice({
       );
       state.documents = filteredDoc;
     },
+    renameCollection: (state, action) => {
+      state.documents[action.payload.id].label = action.payload.newName;
+    },
     addNewFile: (state, action) => {
       state.documents[action.payload.id].leaf.push(action.payload.addFile);
     },
     deleteSingleFile: (state, action) => {
-      const mappedLeaf = state.documents[0].leaf.filter(
-        (val) => val.nodeId !== action.payload
+      const mappedLeaf = state.documents[action.payload.id].leaf.filter(
+        (val) => val.nodeId !== action.payload.currentFile
       );
-      state.documents[0].leaf = mappedLeaf;
+      state.documents[action.payload.id].leaf = mappedLeaf;
     },
   },
 });
@@ -56,6 +59,7 @@ const EditorSlice = createSlice({
 export const {
   showAllDocument,
   addNewCollection,
+  renameCollection,
   addNewFile,
   deleteCollection,
   deleteSingleFile,
