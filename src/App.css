@@ -6,17 +6,22 @@
   outline: none;
 }
 
+.editor-width {
+  width: 75%;
+}
+
 .drawer-custom-styles {
-  width: 35vmax;
+  width: 30%;
   height: 100vmin;
   margin-left: 1em;
   overflow-y: scroll;
-  box-shadow: 4px 3px 4px 3px gray;
+  overflow-x: hidden;
+  box-shadow: 4px 3px 4px 3px rgb(106, 141, 158);
 }
 
 .drawer-collapse {
   position: absolute;
-  top: 165px;
+  top: 120px;
   transform: translateX(-150%);
   transition: all 0.8s;
   z-index: 999;
@@ -75,7 +80,7 @@
 .btn-check-rename {
   position: relative;
   top: -38px;
-  left: 125px;
+  left: 90px;
 }
 
 .btn-check-rename > i {
@@ -83,13 +88,62 @@
   width: 14px;
 }
 
-@media only screen and (max-width: 600px) {
+.user-btn {
+  position: relative;
+}
+
+.user-menu {
+  position: absolute;
+  top: 60px;
+  right: 1015;
+  width: 300px;
+  z-index: 88;
+}
+
+.user-btns:hover {
+  background-color: rgb(108, 122, 126);
+}
+
+.user-btn-active {
+  background-color: rgb(74, 192, 89);
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.dark-mode {
+  background-color: rgb(39, 73, 83);
+  color: rgb(255, 255, 255);
+}
+
+.light-mode {
+  background-color: #fff;
+  color: black;
+}
+
+.btn-hover:hover {
+  color: rgb(255, 255, 255);
+}
+
+.category-btn-border {
+  border-bottom: 3px solid rgb(74, 192, 89);
+}
+
+@media only screen and (max-width: 800px) {
   .drawer-custom-styles {
-    width: 70%;
+    width: 250px;
     position: absolute;
-    top: 27%;
+    top: 21%;
     z-index: 999;
     margin-left: 0;
     height: 100vmax;
+  }
+  .editor-width {
+    width: 100%;
+  }
+
+  .user-menu {
+    width: 260px;
   }
 }

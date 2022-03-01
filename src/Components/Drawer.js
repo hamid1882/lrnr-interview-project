@@ -11,24 +11,16 @@ import {
   renameCollection,
   deleteSingleFile,
   addNewFile,
+  renameSingleFile,
 } from "../Features/EditorSlice";
 
-const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
+const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
   const allData = useSelector(selectAllDocuments);
-
-  // eslint-disable-next-line
-  const [currentActive, setCurrentActive] = useState("Documents");
   const [selected, setSelected] = React.useState([]);
   const [isOpenChangeName, setIsOpenChangeName] = useState(false);
   const [isOpenChangeLeaf, setIsOpenChangeLeaf] = useState(false);
 
-  // console.log(Number(selected));
-
   const leafRef = useRef();
-
-  const handleCurrentFile = (e) => {
-    console.log(selected);
-  };
 
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
@@ -78,7 +70,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
         id: currentParentId - 1,
         addFile: {
           nodeId: parseFloat(toBeFixed),
-          label: `${currentParentId} ${parseFloat(toBeFixed)}`,
+          label: `File ${parseFloat(toBeFixed)}`,
           id: 2,
         },
       })
@@ -159,7 +151,23 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
   };
 
   const handleSaveLeafName = (e) => {
+    e.preventDefault();
     setRenameLeafValue(e.target.value);
+  };
+
+  const handleChangeLeafName = () => {
+    const currentLeaf = Number(selected);
+    const currentParentId = Number(containerRef.current.id);
+    const currentLeafId = currentLeaf.toString().slice(2, 3);
+    dispatch(
+      renameSingleFile({
+        id: currentParentId - 1,
+        leafId: Number(currentLeafId - 1),
+        name: renameLeafValue,
+      })
+    );
+    setIsOpenChangeLeaf(false);
+    setRenameLeafValue("");
   };
 
   useEffect(() => {
@@ -172,17 +180,41 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
   const collapseDrawer = isDrawerOpen ? "drawer-open" : "drawer-collapse";
 
   return (
-    <div className={`drawer-custom-styles bg-light ${collapseDrawer}`}>
+    <div
+      className={`drawer-custom-styles  ${collapseDrawer} ${
+        currentTheme ? "dark-mode" : "light-mode"
+      }`}
+    >
       <div className="row shadow mb-2">
-        <button className="btn shadow-none col col-4">DFIN</button>
+        <button
+          className={`btn shadow-none col col-4 ${
+            currentTheme ? "text-light" : ""
+          }`}
+        >
+          DFIN
+        </button>
         <div className="col col-8 d-flex justify-content-end">
-          <button className="btn shadow-none" onClick={handleAddNewCollection}>
+          <button
+            className={`btn shadow-none ${
+              currentTheme ? "dark-mode btn-hover" : "light-mode"
+            }`}
+            onClick={handleAddNewCollection}
+          >
             <i className="fa fa-plus"></i>
           </button>
-          <button className="btn shadow-none">
+          <button
+            className={`btn shadow-none ${
+              currentTheme ? "dark-mode btn-hover" : "light-mode"
+            }`}
+          >
             <i className="fa fa-expand"></i>
           </button>
-          <button className="btn shadow-none" onClick={handleDrawerClick}>
+          <button
+            className={`btn shadow-none ${
+              currentTheme ? "dark-mode btn-hover" : "light-mode"
+            }`}
+            onClick={handleDrawerClick}
+          >
             <i className="fa fa-angle-double-left"></i>
           </button>
         </div>
@@ -200,6 +232,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
             allData.map((value, idx) => (
               <TreeItem
                 nodeId={String(value.nodeId)}
+                s
                 label={value.label}
                 collapseIcon={<ExpandMoreIcon />}
                 key={idx}
@@ -210,7 +243,9 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                   }`}
                 >
                   <button
-                    className="btn shadow-none"
+                    className={`btn shadow-none bg-transparent ${
+                      currentTheme ? "dark-mode btn-hover" : "light-mode"
+                    }`}
                     onClick={handleNewFile}
                     id={value.nodeId}
                     ref={containerRef}
@@ -218,7 +253,9 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                     <i className="fa fa-plus"></i>
                   </button>
                   <button
-                    className="btn shadow-none"
+                    className={`btn shadow-none bg-transparent ${
+                      currentTheme ? "dark-mode btn-hover" : "light-mode"
+                    }`}
                     onClick={handleRenameCollection}
                     id={value.nodeId}
                     ref={containerRef}
@@ -226,7 +263,9 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                     <i className="fa fa-edit"></i>
                   </button>
                   <button
-                    className="btn shadow-none"
+                    className={`btn shadow-none bg-transparent ${
+                      currentTheme ? "dark-mode btn-hover" : "light-mode"
+                    }`}
                     onClick={handleDeleteFile}
                     id={value.nodeId}
                     ref={containerRef}
@@ -270,8 +309,6 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                       <TreeItem
                         nodeId={String(leafValue.nodeId)}
                         label={leafValue.label}
-                        ContentProps={{ name: "hamid" }}
-                        onClick={handleCurrentFile}
                         ref={leafRef}
                         id={leafValue.label}
                       ></TreeItem>
@@ -283,16 +320,36 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                         }`}
                       >
                         <button
-                          className="btn shadow-none"
+                          className={`btn shadow-none bg-transparent ${
+                            isOpenChangeLeaf ? "d-none" : "d-flex"
+                          } ${
+                            currentTheme ? "dark-mode btn-hover" : "light-mode"
+                          }`}
                           onClick={handleRenameLeaf}
                         >
                           <i className="fa fa-edit"></i>
                         </button>
-                        <button className="btn shadow-none">
+                        <button
+                          className={`btn shadow-none bg-transparent ${
+                            isOpenChangeLeaf ? "d-flex" : "d-none"
+                          } ${
+                            currentTheme ? "dark-mode btn-hover" : "light-mode"
+                          }`}
+                          onClick={handleRenameLeaf}
+                        >
+                          <i className="fa fa-remove"></i>
+                        </button>
+                        <button
+                          className={`btn shadow-none bg-transparent ${
+                            currentTheme ? "dark-mode btn-hover" : "light-mode"
+                          }`}
+                        >
                           <i className="fa fa-clone"></i>
                         </button>
                         <button
-                          className="btn shadow-none"
+                          className={`btn shadow-none bg-transparent ${
+                            currentTheme ? "dark-mode btn-hover" : "light-mode"
+                          }`}
                           onClick={handleDeleteSingleFile}
                         >
                           <i className="fa fa-trash"></i>
@@ -311,13 +368,13 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen }) => {
                           className=" border-0 shadow-none"
                           onChange={handleSaveLeafName}
                           value={renameLeafValue}
-                          onKeyPress={handleOnKeyPress}
                           ref={leafInputRef}
                         />
                         <button
                           className={`btn shadow-none btn-check-rename ${
                             renameLeafValue.length > 1 ? "d-block" : "d-none"
                           }`}
+                          onClick={handleChangeLeafName}
                         >
                           <i className="fa fa-check text-success"></i>
                         </button>

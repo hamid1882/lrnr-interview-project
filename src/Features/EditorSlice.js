@@ -23,6 +23,7 @@ const allDocuments = [
 
 export const initialState = {
   documents: allDocuments,
+  isDarkMode: false,
 };
 
 const EditorSlice = createSlice({
@@ -53,6 +54,13 @@ const EditorSlice = createSlice({
       );
       state.documents[action.payload.id].leaf = mappedLeaf;
     },
+    renameSingleFile: (state, action) => {
+      state.documents[action.payload.id].leaf[action.payload.leafId].label =
+        action.payload.name;
+    },
+    toggleDarkMode: (state, action) => {
+      state.isDarkMode = action.payload;
+    },
   },
 });
 
@@ -63,8 +71,11 @@ export const {
   addNewFile,
   deleteCollection,
   deleteSingleFile,
+  renameSingleFile,
+  toggleDarkMode,
 } = EditorSlice.actions;
 
 export const selectAllDocuments = (state) => state.EditorSlice.documents;
+export const selectCurrentTheme = (state) => state.EditorSlice.isDarkMode;
 
 export default EditorSlice.reducer;
