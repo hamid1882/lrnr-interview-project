@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 // import { useSelector } from "react-redux";
-import { Editor, EditorState, RichUtils, Immutable, Modifier } from "draft-js";
-import { convertToRaw } from "draft-js";
+import { Editor, EditorState, RichUtils } from "draft-js";
 import "draft-js/dist/Draft.css";
 // import { selectCurrentValue } from "../Features/EditorSlice";
 
@@ -15,7 +14,7 @@ const EditorContainer = ({ currentTheme }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [currentAligned, setCurrentAligned] = useState("left");
 
-  const newData = "Enter me into your editor";
+  // const newData = "Enter me into your editor";
 
   // setEditorState.createWithContent(newData);
 

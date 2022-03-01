@@ -314,7 +314,8 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                       ></TreeItem>
                       <div
                         className={`drawer-btn justify-content-center align-items-center ${
-                          Number(selected) === leafValue.nodeId
+                          Number(selected) === leafValue.nodeId &&
+                          Number(containerRef.current.id) === value.nodeId
                             ? "d-flex "
                             : "d-none"
                         }`}
