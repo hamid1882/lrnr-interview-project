@@ -108,7 +108,7 @@ const EditorContainer = ({ currentTheme }) => {
         </button>
       </div>
 
-      <div className="container mx-auto">
+      <div className="container mx-auto editor-input">
         <Editor
           editorState={editorState}
           onChange={setEditorState}

@@ -26,7 +26,7 @@ const App = () => {
         handleDrawerClick={handleDrawerClick}
       />
       <RenderOptions />
-      <div className="mx-auto d-flex gap-2 p-2">
+      <div className="mx-auto d-flex p-2">
         <Drawer
           isDrawerOpen={isDrawerOpen}
           handleDrawerClick={handleDrawerClick}

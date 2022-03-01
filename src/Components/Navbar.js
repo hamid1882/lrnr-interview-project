@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleDarkMode, selectCurrentTheme } from "../Features/EditorSlice";
+import {
+  toggleDarkMode,
+  selectCurrentTheme,
+  selectAllDocuments,
+} from "../Features/EditorSlice";
 
 const Navbar = ({ handleDrawerClick }) => {
   const [isUserClicked, setIsUserClicked] = useState(false);
+  const [searchFiles, setSearchFiles] = useState(false);
+  const [currentSearch, setCurrentSearch] = useState("");
+
   const currentTheme = useSelector(selectCurrentTheme);
   const dispatch = useDispatch();
+  const allDocumentData = useSelector(selectAllDocuments);
 
   const handleIsUserClicked = () => {
     if (isUserClicked === false) {
@@ -22,6 +30,23 @@ const Navbar = ({ handleDrawerClick }) => {
       dispatch(toggleDarkMode(true));
     }
   };
+
+  const handleCurrentSearch = (e) => {
+    e.preventDefault();
+    setCurrentSearch(e.target.value);
+  };
+
+  const filteredData = allDocumentData.filter((value) =>
+    value.label.toLowerCase().includes(currentSearch.toLowerCase())
+  );
+
+  useEffect(() => {
+    if (currentSearch.length > 0) {
+      setSearchFiles(true);
+    } else {
+      setSearchFiles(false);
+    }
+  }, [currentSearch]);
 
   return (
     <div
@@ -42,17 +67,44 @@ const Navbar = ({ handleDrawerClick }) => {
         ></i>
       </button>
       <div
-        className={`d-none d-lg-flex d-flex col col-9 justify-content-center align-items-center gap-2 p-2 rounded shadow ${
+        className={`nav-serch-results  shadow ${
+          searchFiles ? "d-block" : "d-none"
+        } ${currentTheme ? "dark-mode" : "light-mode"}`}
+      >
+        {filteredData.length === 0 && (
+          <h5
+            className={`text-secondary p-3 ${
+              currentTheme ? "dark-mode" : "light-mode"
+            }`}
+          >
+            No Results found
+          </h5>
+        )}
+        <div
+          className={`p-2 results-div   ${
+            currentTheme ? "dark-mode" : "light-mode"
+          }`}
+        >
+          {filteredData.map((value) => (
+            <div className={`search-result-files p-1 `}>{value.label}</div>
+          ))}
+        </div>
+      </div>
+      <div
+        className={`d-none d-lg-flex d-flex col col-9 justify-content-start align-items-center gap-2 p-2 rounded shadow ${
           currentTheme ? "border border-light" : "border border-dark"
         }`}
       >
         <i className="fa fa-search" aria-hidden="true"></i>
+
         <input
           className={`border-0 w-100 input-custom-styles ${
             currentTheme ? "dark-mode" : "light-mode"
           }`}
           type="text"
-          placeholder="search"
+          placeholder="Search Collection"
+          value={currentSearch}
+          onChange={handleCurrentSearch}
         />
       </div>
       <div className="col col-2 d-flex gap-2 justify-content-end">

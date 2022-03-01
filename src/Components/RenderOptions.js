@@ -6,7 +6,7 @@ const RenderOptions = () => {
   const currentTheme = useSelector(selectCurrentTheme);
   return (
     <div
-      className={`container-fluid mx-auto row p-2 justify-content-start  ${
+      className={`container-fluid mx-auto row p-2 justify-content-start category-container ${
         currentTheme ? "dark-mode" : "light-mode"
       }`}
     >

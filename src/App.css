@@ -10,13 +10,38 @@
   width: 75%;
 }
 
+.DraftEditor-alignLeft .public-DraftStyleDefault-block {
+  z-index: 0;
+}
+
+.category-container {
+  position: relative;
+}
+
+.nav-serch-results {
+  position: absolute;
+  top: 70px;
+  left: 10%;
+  width: 50%;
+  margin-top: -15px;
+  z-index: 10;
+}
+
+.search-result-files {
+  cursor: pointer;
+}
+
+.search-result-files:hover {
+  background-color: rgb(74, 192, 89);
+}
+
 .drawer-custom-styles {
   width: 30%;
   height: 100vmin;
-  margin-left: 1em;
   overflow-y: scroll;
   overflow-x: hidden;
-  box-shadow: 4px 3px 4px 3px rgb(106, 141, 158);
+  background-color: white;
+  z-index: 2;
 }
 
 .drawer-collapse {
@@ -24,7 +49,7 @@
   top: 120px;
   transform: translateX(-150%);
   transition: all 0.8s;
-  z-index: 999;
+  z-index: 0;
 }
 
 .drawer-open {
@@ -97,7 +122,7 @@
   top: 60px;
   right: 1015;
   width: 300px;
-  z-index: 88;
+  z-index: 3;
 }
 
 .user-btns:hover {
@@ -134,8 +159,7 @@
   .drawer-custom-styles {
     width: 250px;
     position: absolute;
-    top: 21%;
-    z-index: 999;
+    top: 18%;
     margin-left: 0;
     height: 100vmax;
   }
