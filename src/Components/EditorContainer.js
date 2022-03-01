@@ -52,12 +52,12 @@ const EditorContainer = ({ currentTheme }) => {
 
   return (
     <div
-      className={`container mx-auto editor-width vh-100 border p-2 mx-3 ${
+      className={`container mx-auto editor-width h-100 border p-2 mx-3 ${
         currentTheme ? "border-secondary" : "null"
       }`}
     >
       <h3 className="text-center">WYSIWYG Editor</h3>
-      <div className="d-flex justify-content-center gap-2 my-2">
+      <div className="d-flex justify-content-start gap-2 my-2">
         <button
           onClick={_onBoldClick}
           className={`btn shadow-none btn-transparent ${
@@ -108,7 +108,11 @@ const EditorContainer = ({ currentTheme }) => {
         </button>
       </div>
 
-      <div className="container mx-auto editor-input">
+      <div
+        className={`container mx-auto editor-input editor ${
+          currentTheme ? "dark-mode" : "light-mode"
+        }`}
+      >
         <Editor
           editorState={editorState}
           onChange={setEditorState}

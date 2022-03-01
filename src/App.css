@@ -2,12 +2,28 @@
   margin: 0;
 }
 
+.editor {
+  height: 80vh;
+  overflow-y: scroll;
+}
+
+.editor::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.editor {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .input-custom-styles:focus {
   outline: none;
 }
 
 .editor-width {
   width: 75%;
+  height: 100%;
 }
 
 .DraftEditor-alignLeft .public-DraftStyleDefault-block {
@@ -37,7 +53,7 @@
 
 .drawer-custom-styles {
   width: 30%;
-  height: 100vmin;
+  height: 100vh;
   overflow-y: scroll;
   overflow-x: hidden;
   background-color: white;
@@ -81,6 +97,10 @@
 
 .drawer-btn > button {
   margin-top: 10px;
+}
+
+.collection-rename-input:focus {
+  outline: none;
 }
 
 .collection-rename-leaf {

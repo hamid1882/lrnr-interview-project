@@ -5,17 +5,14 @@ const allDocuments = [
     name: "container-node",
     nodeId: 1,
     label: "Collection 1",
-    id: 1,
     leaf: [
       {
         nodeId: 1.1,
         label: "File 1.1",
-        id: 1,
       },
       {
         nodeId: 1.2,
         label: "File 1.2",
-        id: 2,
       },
     ],
   },

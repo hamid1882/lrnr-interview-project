@@ -86,7 +86,9 @@ const Navbar = ({ handleDrawerClick }) => {
           }`}
         >
           {filteredData.map((value) => (
-            <div className={`search-result-files p-1 `}>{value.label}</div>
+            <div key={value.nodeId} className={`search-result-files p-1 `}>
+              {value.label}
+            </div>
           ))}
         </div>
       </div>
@@ -124,7 +126,7 @@ const Navbar = ({ handleDrawerClick }) => {
         </button>
         <button
           className={`btn shadow-none user-btn ${
-            isUserClicked ? "rounded-circle bg-warning" : "null"
+            isUserClicked ? "rounded-circle bg-success" : "null"
           } ${currentTheme ? "dark-mode btn-hover" : "light-mode"}`}
           onClick={handleIsUserClicked}
         >

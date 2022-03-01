@@ -46,7 +46,9 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
 
   // Add new collection
   const handleAddNewCollection = () => {
-    dispatch(addNewCollection(insertThisData));
+    if (currentContainer <= 8) {
+      dispatch(addNewCollection(insertThisData));
+    }
   };
 
   const containerRef = useRef();
@@ -65,16 +67,18 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
         ? incrementCurrentId.toFixed(2)
         : incrementCurrentId.toFixed(1);
 
-    dispatch(
-      addNewFile({
-        id: currentParentId - 1,
-        addFile: {
-          nodeId: parseFloat(toBeFixed),
-          label: `File ${parseFloat(toBeFixed)}`,
-          id: 2,
-        },
-      })
-    );
+    if (toBeFixed <= currentParentId + 0.9) {
+      dispatch(
+        addNewFile({
+          id: currentParentId - 1,
+          addFile: {
+            nodeId: parseFloat(toBeFixed),
+            label: `File ${parseFloat(toBeFixed)}`,
+            id: 2,
+          },
+        })
+      );
+    }
   };
 
   // delete existing file
@@ -159,13 +163,16 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
     const currentLeaf = Number(selected);
     const currentParentId = Number(containerRef.current.id);
     const currentLeafId = currentLeaf.toString().slice(2, 3);
-    dispatch(
-      renameSingleFile({
-        id: currentParentId - 1,
-        leafId: Number(currentLeafId - 1),
-        name: renameLeafValue,
-      })
-    );
+    console.log(currentLeafId);
+    if (currentLeafId <= 9) {
+      dispatch(
+        renameSingleFile({
+          id: currentParentId - 1,
+          leafId: Number(currentLeafId - 1),
+          name: renameLeafValue,
+        })
+      );
+    }
     setIsOpenChangeLeaf(false);
     setRenameLeafValue("");
   };
@@ -283,7 +290,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                 >
                   <input
                     type="text"
-                    className="rounde"
+                    className="collection-rename-input"
                     onChange={handleRenameChange}
                     value={renameCollectionValue}
                     onKeyPress={handleOnKeyPress}

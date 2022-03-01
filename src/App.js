@@ -20,13 +20,13 @@ const App = () => {
   };
 
   return (
-    <div className={`${currentTheme ? "dark-mode" : "light-mode"}`}>
+    <div className={` ${currentTheme ? "dark-mode" : "light-mode"}`}>
       <Navbar
         isDrawerOpen={isDrawerOpen}
         handleDrawerClick={handleDrawerClick}
       />
       <RenderOptions />
-      <div className="mx-auto d-flex p-2">
+      <div className="mx-auto d-flex p-2 ">
         <Drawer
           isDrawerOpen={isDrawerOpen}
           handleDrawerClick={handleDrawerClick}
