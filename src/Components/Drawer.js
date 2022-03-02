@@ -50,6 +50,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
       {
         nodeId: currentContainer + 1 + 0.1,
         label: `File ${currentContainer + 1 + ".1"}`,
+        value: `Edit me i am ${currentContainer + 1 + ".1"}`,
       },
     ],
   };
@@ -122,6 +123,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
           addFile: {
             nodeId: parseFloat(toBeFixed),
             label: `File ${parseFloat(toBeFixed)}`,
+            value: `Edit me i am File ${parseFloat(toBeFixed)}`,
           },
         })
       );
@@ -343,7 +345,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                         <button
                           className={`btn shadow-none bg-transparent ${switchTheme}`}
                           onClick={() => {
-                            navigator.clipboard.writeText(leafValue.label);
+                            navigator.clipboard.writeText(leafValue.value);
                           }}
                         >
                           <i className="fa fa-clone"></i>

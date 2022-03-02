@@ -8,10 +8,12 @@ const allDocuments = [
       {
         nodeId: 1.1,
         label: "File 1.1",
+        value: "Hamid is going to be a awesome developer!",
       },
       {
         nodeId: 1.2,
         label: "File 1.2",
+        value: "Awesome is the way you speak...",
       },
     ],
   },
@@ -62,6 +64,10 @@ const EditorSlice = createSlice({
       state.documents[action.payload.id].leaf[action.payload.leafId].label =
         action.payload.name;
     },
+    renameFileValue: (state, action) => {
+      state.documents[action.payload.id].leaf[action.payload.leafId].value =
+        action.payload.value;
+    },
     toggleDarkMode: (state, action) => {
       state.isDarkMode = action.payload;
     },
@@ -79,6 +85,7 @@ export const {
   deleteSingleFile,
   renameSingleFile,
   toggleDarkMode,
+  renameFileValue,
 } = EditorSlice.actions;
 
 export const selectCurrentEditorText = (state) => state.EditorSlice.currentText;

@@ -4,7 +4,9 @@ const RenderOptions = ({ currentTheme }) => {
   const switchTheme = currentTheme ? "dark-mode btn-hover" : "light-mode";
   return (
     <div
-      className={`container-fluid mx-auto row p-2 justify-content-start category-container border-bottom ${switchTheme}`}
+      className={`container-fluid mx-auto row p-2 justify-content-start category-container ${
+        currentTheme ? "nav-border-dark" : "border-bottom"
+      } ${switchTheme}`}
     >
       <div>
         <button
