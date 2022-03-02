@@ -21,12 +21,20 @@ const allDocuments = [
 export const initialState = {
   documents: allDocuments,
   isDarkMode: false,
+  currentText: "",
+  currentId: 0,
 };
 
 const EditorSlice = createSlice({
   name: "editor",
   initialState,
   reducers: {
+    currentEditorText: (state, action) => {
+      state.currentText = action.payload;
+    },
+    renderCurrentContainer: (state, action) => {
+      state.currentId = action.payload;
+    },
     showAllDocument: (state, action) => {
       return state.documents;
     },
@@ -62,6 +70,8 @@ const EditorSlice = createSlice({
 });
 
 export const {
+  currentEditorText,
+  renderCurrentContainer,
   showAllDocument,
   addNewCollection,
   renameCollection,
@@ -72,7 +82,9 @@ export const {
   toggleDarkMode,
 } = EditorSlice.actions;
 
+export const selectCurrentEditorText = (state) => state.EditorSlice.currentText;
 export const selectAllDocuments = (state) => state.EditorSlice.documents;
 export const selectCurrentTheme = (state) => state.EditorSlice.isDarkMode;
+export const selectCurrentId = (state) => state.EditorSlice.currentId;
 
 export default EditorSlice.reducer;

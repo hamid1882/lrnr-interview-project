@@ -6,6 +6,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import TreeItem from "@mui/lab/TreeItem";
 import {
   selectAllDocuments,
+  renderCurrentContainer,
   addNewCollection,
   deleteCollection,
   renameCollection,
@@ -19,16 +20,20 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
   const [selected, setSelected] = React.useState([]);
   const [isOpenChangeName, setIsOpenChangeName] = useState(false);
   const [isOpenChangeLeaf, setIsOpenChangeLeaf] = useState(false);
+  const dispatch = useDispatch();
 
+  const containerRef = useRef();
   const leafRef = useRef();
+
+  useEffect(() => {
+    dispatch(renderCurrentContainer(Number(selected)));
+  }, [dispatch, selected]);
 
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
   };
 
   const currentContainer = allData[allData.length - 1].nodeId;
-
-  const dispatch = useDispatch();
 
   const insertThisData = {
     name: "container-node",
@@ -50,8 +55,6 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
       dispatch(addNewCollection(insertThisData));
     }
   };
-
-  const containerRef = useRef();
 
   // add a new file
   const handleNewFile = () => {
@@ -163,7 +166,6 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
     const currentLeaf = Number(selected);
     const currentParentId = Number(containerRef.current.id);
     const currentLeafId = currentLeaf.toString().slice(2, 3);
-    console.log(currentLeafId);
     if (currentLeafId <= 9) {
       dispatch(
         renameSingleFile({
@@ -175,6 +177,23 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
     }
     setIsOpenChangeLeaf(false);
     setRenameLeafValue("");
+  };
+
+  const handleOnKeyLeafPress = (event) => {
+    const currentLeaf = Number(selected);
+    const currentParentId = Number(containerRef.current.id);
+    const currentLeafId = currentLeaf.toString().slice(2, 3);
+    if (currentLeafId <= 9 && event.key === "Enter") {
+      dispatch(
+        renameSingleFile({
+          id: currentParentId - 1,
+          leafId: Number(currentLeafId - 1),
+          name: renameLeafValue,
+        })
+      );
+      setIsOpenChangeLeaf(false);
+      setRenameLeafValue("");
+    }
   };
 
   useEffect(() => {
@@ -239,7 +258,6 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
             allData.map((value, idx) => (
               <TreeItem
                 nodeId={String(value.nodeId)}
-                s
                 label={value.label}
                 collapseIcon={<ExpandMoreIcon />}
                 key={idx}
@@ -351,6 +369,9 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                           className={`btn shadow-none bg-transparent ${
                             currentTheme ? "dark-mode btn-hover" : "light-mode"
                           }`}
+                          onClick={() => {
+                            navigator.clipboard.writeText(leafValue.label);
+                          }}
                         >
                           <i className="fa fa-clone"></i>
                         </button>
@@ -377,6 +398,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                           onChange={handleSaveLeafName}
                           value={renameLeafValue}
                           ref={leafInputRef}
+                          onKeyPress={handleOnKeyLeafPress}
                         />
                         <button
                           className={`btn shadow-none btn-check-rename ${

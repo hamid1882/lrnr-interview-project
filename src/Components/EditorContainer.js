@@ -1,8 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-// import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Editor, EditorState, RichUtils } from "draft-js";
 import "draft-js/dist/Draft.css";
-// import { selectCurrentValue } from "../Features/EditorSlice";
+import {
+  currentEditorText,
+  selectCurrentEditorText,
+  selectCurrentId,
+  selectAllDocuments,
+  addNewFile,
+} from "../Features/EditorSlice";
 
 const styleMap = {
   STRIKETHROUGH: {
@@ -13,10 +19,42 @@ const styleMap = {
 const EditorContainer = ({ currentTheme }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [currentAligned, setCurrentAligned] = useState("left");
+  const currentContent = editorState.getCurrentContent();
+  const dispatch = useDispatch();
 
-  // const newData = "Enter me into your editor";
+  const allDocuments = useSelector(selectAllDocuments);
 
-  // setEditorState.createWithContent(newData);
+  const allId = useSelector(selectCurrentId);
+  const containerId = allId.toString().charAt(0);
+
+  // id's of container and leaf elements
+  const lastCollection = allDocuments.length - 1;
+  const lastLeaf = allDocuments[lastCollection].leaf.length - 1;
+  const lastLeafId = allDocuments[lastCollection].leaf[lastLeaf].nodeId;
+  const incrementer = lastLeafId + 0.1;
+  const onlyTwo = incrementer.toFixed(1);
+
+  const newFile = {
+    nodeId: Number(onlyTwo),
+    label: `WYSIWYG ${
+      Number(containerId) + "." + allDocuments[lastCollection].leaf.length
+    }`,
+    value: currentContent.getPlainText(),
+  };
+
+  const saveAsNewFile = () => {
+    dispatch(
+      addNewFile({
+        id: Number(containerId) - 1,
+        addFile: newFile,
+      })
+    );
+    setEditorState(EditorState.createEmpty());
+  };
+
+  useEffect(() => {
+    dispatch(currentEditorText(currentContent.getPlainText()));
+  }, [dispatch, currentContent]);
 
   const editorRef = useRef();
 
@@ -56,7 +94,17 @@ const EditorContainer = ({ currentTheme }) => {
         currentTheme ? "border-secondary" : "null"
       }`}
     >
-      <h3 className="text-center">WYSIWYG Editor</h3>
+      <div className="d-flex">
+        <button
+          className={`btn btn-success shadow-none ${
+            currentContent.getPlainText().length > 0 ? "d-flex" : "d-none"
+          }`}
+          onClick={saveAsNewFile}
+        >
+          Save in a new file
+        </button>
+        <h3 className="text-center mx-auto">WYSIWYG Editor</h3>
+      </div>
       <div className="d-flex justify-content-start gap-2 my-2">
         <button
           onClick={_onBoldClick}
