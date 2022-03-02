@@ -11,24 +11,19 @@ const Navbar = ({ handleDrawerClick }) => {
   const [searchFiles, setSearchFiles] = useState(false);
   const [currentSearch, setCurrentSearch] = useState("");
 
-  const currentTheme = useSelector(selectCurrentTheme);
   const dispatch = useDispatch();
+
+  // Getting current theme and all collections for search input
+  const currentTheme = useSelector(selectCurrentTheme);
   const allDocumentData = useSelector(selectAllDocuments);
 
   const handleIsUserClicked = () => {
-    if (isUserClicked === false) {
-      setIsUserClicked(true);
-    } else {
-      setIsUserClicked(false);
-    }
+    setIsUserClicked(!isUserClicked);
   };
 
+  // Toggle theme on click
   const handleToggleDarkMode = () => {
-    if (currentTheme) {
-      dispatch(toggleDarkMode(false));
-    } else {
-      dispatch(toggleDarkMode(true));
-    }
+    dispatch(toggleDarkMode(!currentTheme));
   };
 
   const handleCurrentSearch = (e) => {
@@ -40,6 +35,7 @@ const Navbar = ({ handleDrawerClick }) => {
     value.label.toLowerCase().includes(currentSearch.toLowerCase())
   );
 
+  // Search results
   useEffect(() => {
     if (currentSearch.length > 0) {
       setSearchFiles(true);
@@ -48,11 +44,12 @@ const Navbar = ({ handleDrawerClick }) => {
     }
   }, [currentSearch]);
 
+  // Switch theme styles
+  const switchTheme = currentTheme ? "dark-mode btn-hover" : "light-mode";
+
   return (
     <div
-      className={`row container-fluid mx-auto justify-content-between align-items-center p-2 ${
-        currentTheme ? "dark-mode" : "light-mode"
-      }`}
+      className={`row container-fluid mx-auto justify-content-between align-items-center p-2 ${switchTheme}`}
     >
       <button
         className={`btn shadow-none col d-flex justify-content-start mx-2 ${
@@ -69,22 +66,14 @@ const Navbar = ({ handleDrawerClick }) => {
       <div
         className={`nav-serch-results  shadow ${
           searchFiles ? "d-block" : "d-none"
-        } ${currentTheme ? "dark-mode" : "light-mode"}`}
+        } ${switchTheme}`}
       >
         {filteredData.length === 0 && (
-          <h5
-            className={`text-secondary p-3 ${
-              currentTheme ? "dark-mode" : "light-mode"
-            }`}
-          >
+          <h5 className={`text-secondary p-3 ${switchTheme}`}>
             No Results found
           </h5>
         )}
-        <div
-          className={`p-2 results-div   ${
-            currentTheme ? "dark-mode" : "light-mode"
-          }`}
-        >
+        <div className={`p-2 results-div   ${switchTheme}`}>
           {filteredData.map((value) => (
             <div key={value.nodeId} className={`search-result-files p-1 `}>
               {value.label}
@@ -100,9 +89,7 @@ const Navbar = ({ handleDrawerClick }) => {
         <i className="fa fa-search" aria-hidden="true"></i>
 
         <input
-          className={`border-0 w-100 input-custom-styles ${
-            currentTheme ? "dark-mode" : "light-mode"
-          }`}
+          className={`border-0 w-100 input-custom-styles ${switchTheme}`}
           type="text"
           placeholder="Search Collection"
           value={currentSearch}
@@ -110,24 +97,14 @@ const Navbar = ({ handleDrawerClick }) => {
         />
       </div>
       <div className="col col-2 d-flex gap-2 justify-content-end">
-        <button
-          className={`btn shadow-none ${
-            currentTheme ? "dark-mode btn-hover" : "light-mode"
-          }`}
-        >
-          Invite
-        </button>
-        <button
-          className={`btn shadow-none ${
-            currentTheme ? "dark-mode btn-hover" : "light-mode"
-          }`}
-        >
+        <button className={`btn shadow-none ${switchTheme}`}>Invite</button>
+        <button className={`btn shadow-none ${switchTheme}`}>
           <i className="fa fa-bell"></i>
         </button>
         <button
           className={`btn shadow-none user-btn ${
             isUserClicked ? "rounded-circle bg-success" : "null"
-          } ${currentTheme ? "dark-mode btn-hover" : "light-mode"}`}
+          } ${switchTheme}`}
           onClick={handleIsUserClicked}
         >
           <i className="fa fa-user"></i>
@@ -135,7 +112,7 @@ const Navbar = ({ handleDrawerClick }) => {
         <div
           className={`user-menu d-grid shadow p-2 rounded ${
             isUserClicked ? "d-block" : "d-none"
-          } ${currentTheme ? "dark-mode" : "light-mode"}`}
+          } ${switchTheme}`}
         >
           <div
             className={`px-2 py-2 d-flex justify-content-between align-items-center cursor  ${
@@ -157,25 +134,19 @@ const Navbar = ({ handleDrawerClick }) => {
             </div>
           </div>
           <button
-            className={`btn shadow-none d-flex justify-content-start align-items-center gap-2 user-btns ${
-              currentTheme ? "dark-mode btn-hover" : "light-mode"
-            }`}
+            className={`btn shadow-none d-flex justify-content-start align-items-center gap-2 user-btns ${switchTheme}`}
           >
             <i className="fa fa-user"></i>
             <span className="fs-5">Profile</span>
           </button>
           <button
-            className={`btn shadow-none d-flex justify-content-start align-items-center gap-2 user-btns ${
-              currentTheme ? "dark-mode btn-hover" : "light-mode"
-            }`}
+            className={`btn shadow-none d-flex justify-content-start align-items-center gap-2 user-btns ${switchTheme}`}
           >
             <i className="fa fa-dashboard"></i>
             <span className="fs-5">Dashboard</span>
           </button>
           <button
-            className={`btn shadow-none d-flex justify-content-start align-items-center gap-2 user-btns ${
-              currentTheme ? "dark-mode btn-hover" : "light-mode"
-            }`}
+            className={`btn shadow-none d-flex justify-content-start align-items-center gap-2 user-btns ${switchTheme}`}
           >
             <i className="fa fa-sign-out"></i>
             <span className="fs-5">Logout</span>

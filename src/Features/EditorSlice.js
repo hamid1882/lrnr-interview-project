@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const allDocuments = [
   {
-    name: "container-node",
     nodeId: 1,
     label: "Collection 1",
     leaf: [

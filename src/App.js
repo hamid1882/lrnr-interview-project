@@ -12,20 +12,18 @@ const App = () => {
   const currentTheme = useSelector(selectCurrentTheme);
 
   const handleDrawerClick = () => {
-    if (isDrawerOpen === true) {
-      setIsDrawerOpen(false);
-    } else {
-      setIsDrawerOpen(true);
-    }
+    setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const switchTheme = currentTheme ? "dark-mode" : "light-mode";
+
   return (
-    <div className={` ${currentTheme ? "dark-mode" : "light-mode"}`}>
+    <div className={switchTheme}>
       <Navbar
         isDrawerOpen={isDrawerOpen}
         handleDrawerClick={handleDrawerClick}
       />
-      <RenderOptions />
+      <RenderOptions currentTheme={currentTheme} />
       <div className="mx-auto d-flex p-2 ">
         <Drawer
           isDrawerOpen={isDrawerOpen}

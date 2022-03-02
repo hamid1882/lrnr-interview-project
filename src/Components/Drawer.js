@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import TreeView from "@mui/lab/TreeView";
+import TreeItem from "@mui/lab/TreeItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import TreeItem from "@mui/lab/TreeItem";
 import {
   selectAllDocuments,
   renderCurrentContainer,
@@ -16,27 +16,33 @@ import {
 } from "../Features/EditorSlice";
 
 const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
-  const allData = useSelector(selectAllDocuments);
   const [selected, setSelected] = React.useState([]);
-  const [isOpenChangeName, setIsOpenChangeName] = useState(false);
-  const [isOpenChangeLeaf, setIsOpenChangeLeaf] = useState(false);
   const dispatch = useDispatch();
+  const allData = useSelector(selectAllDocuments);
 
+  // Container's reference
   const containerRef = useRef();
+
+  // Leaf's reference
   const leafRef = useRef();
 
-  useEffect(() => {
-    dispatch(renderCurrentContainer(Number(selected)));
-  }, [dispatch, selected]);
-
+  // get all the nodeid's onSelect
   const handleSelect = (event, nodeIds) => {
     setSelected(nodeIds);
   };
 
+  // dispatching current selected node id
+  useEffect(() => {
+    dispatch(renderCurrentContainer(Number(selected)));
+  }, [dispatch, selected]);
+
+  // id of the last container
   const currentContainer = allData[allData.length - 1].nodeId;
 
-  const insertThisData = {
-    name: "container-node",
+  const [isOpenChangeName, setIsOpenChangeName] = useState(false);
+
+  // insert new collection schema
+  const newCollection = {
     nodeId: currentContainer + 1,
     label: `Collection ${currentContainer + 1}`,
     id: currentContainer + 1,
@@ -44,7 +50,6 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
       {
         nodeId: currentContainer + 1 + 0.1,
         label: `File ${currentContainer + 1 + ".1"}`,
-        id: 5,
       },
     ],
   };
@@ -52,68 +57,24 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
   // Add new collection
   const handleAddNewCollection = () => {
     if (currentContainer <= 8) {
-      dispatch(addNewCollection(insertThisData));
+      dispatch(addNewCollection(newCollection));
     }
   };
 
-  // add a new file
-  const handleNewFile = () => {
-    const currentParentId = Number(containerRef.current.id);
-    const currentContainerNodeId =
-      allData[currentParentId - 1].leaf[
-        allData[currentParentId - 1].leaf.length - 1
-      ].nodeId;
-
-    const incrementCurrentId = currentContainerNodeId + 0.1;
-    const toBeFixed =
-      incrementCurrentId >= 1.9
-        ? incrementCurrentId.toFixed(2)
-        : incrementCurrentId.toFixed(1);
-
-    if (toBeFixed <= currentParentId + 0.9) {
-      dispatch(
-        addNewFile({
-          id: currentParentId - 1,
-          addFile: {
-            nodeId: parseFloat(toBeFixed),
-            label: `File ${parseFloat(toBeFixed)}`,
-            id: 2,
-          },
-        })
-      );
-    }
-  };
-
-  // delete existing file
-  const handleDeleteFile = () => {
+  // delete collection
+  const handleDeleteCollection = () => {
     if (Number(selected) > 1) {
       dispatch(deleteCollection(Number(selected)));
     }
   };
 
-  // delete single file with id
-  const handleDeleteSingleFile = () => {
-    const currentParentId = Number(containerRef.current.id);
-    if (parseFloat(selected) > currentParentId + 0.1) {
-      dispatch(
-        deleteSingleFile({
-          id: currentParentId - 1,
-          currentFile: parseFloat(selected),
-        })
-      );
-    }
-  };
+  const [isOpenChangeLeaf, setIsOpenChangeLeaf] = useState(false);
+  const [renameCollectionValue, setRenameCollectionValue] = useState("");
 
   // rename collection
   const handleRenameCollection = () => {
-    if (isOpenChangeName === false) {
-      setIsOpenChangeName(true);
-    } else {
-      setIsOpenChangeName(false);
-    }
+    setIsOpenChangeName(!isOpenChangeName);
   };
-
-  const [renameCollectionValue, setRenameCollectionValue] = useState("");
 
   const handleRenameChange = (e) => {
     e.preventDefault();
@@ -144,17 +105,48 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
     }
   };
 
+  // add a new file
+  const handleNewFile = () => {
+    const currentParentId = Number(containerRef.current.id);
+    const lastLeafId = allData[currentParentId - 1].leaf.length - 1;
+    const currentContainerNodeId =
+      allData[currentParentId - 1].leaf[lastLeafId].nodeId;
+
+    const incrementCurrentId = currentContainerNodeId + 0.1;
+    const toBeFixed = incrementCurrentId.toFixed(1);
+
+    if (toBeFixed <= currentParentId + 0.9) {
+      dispatch(
+        addNewFile({
+          id: currentParentId - 1,
+          addFile: {
+            nodeId: parseFloat(toBeFixed),
+            label: `File ${parseFloat(toBeFixed)}`,
+          },
+        })
+      );
+    }
+  };
+
+  // delete single file
+  const handleDeleteSingleFile = () => {
+    const currentParentId = Number(containerRef.current.id);
+    if (parseFloat(selected) > currentParentId + 0.1) {
+      dispatch(
+        deleteSingleFile({
+          id: currentParentId - 1,
+          currentFile: parseFloat(selected),
+        })
+      );
+    }
+  };
+
   // Leaf rename
   const [renameLeafValue, setRenameLeafValue] = useState("");
-
   const leafInputRef = useRef();
 
   const handleRenameLeaf = () => {
-    if (isOpenChangeLeaf === false) {
-      setIsOpenChangeLeaf(true);
-    } else {
-      setIsOpenChangeLeaf(false);
-    }
+    setIsOpenChangeLeaf(!isOpenChangeLeaf);
   };
 
   const handleSaveLeafName = (e) => {
@@ -204,6 +196,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
 
   // drawer transition style
   const collapseDrawer = isDrawerOpen ? "drawer-open" : "drawer-collapse";
+  const switchTheme = currentTheme ? "dark-mode btn-hover" : "light-mode";
 
   return (
     <div
@@ -221,24 +214,16 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
         </button>
         <div className="col col-8 d-flex justify-content-end">
           <button
-            className={`btn shadow-none ${
-              currentTheme ? "dark-mode btn-hover" : "light-mode"
-            }`}
+            className={`btn shadow-none ${switchTheme}`}
             onClick={handleAddNewCollection}
           >
             <i className="fa fa-plus"></i>
           </button>
-          <button
-            className={`btn shadow-none ${
-              currentTheme ? "dark-mode btn-hover" : "light-mode"
-            }`}
-          >
+          <button className={`btn shadow-none ${switchTheme}`}>
             <i className="fa fa-expand"></i>
           </button>
           <button
-            className={`btn shadow-none ${
-              currentTheme ? "dark-mode btn-hover" : "light-mode"
-            }`}
+            className={`btn shadow-none ${switchTheme}`}
             onClick={handleDrawerClick}
           >
             <i className="fa fa-angle-double-left"></i>
@@ -268,9 +253,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                   }`}
                 >
                   <button
-                    className={`btn shadow-none bg-transparent ${
-                      currentTheme ? "dark-mode btn-hover" : "light-mode"
-                    }`}
+                    className={`btn shadow-none bg-transparent ${switchTheme}`}
                     onClick={handleNewFile}
                     id={value.nodeId}
                     ref={containerRef}
@@ -278,9 +261,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                     <i className="fa fa-plus"></i>
                   </button>
                   <button
-                    className={`btn shadow-none bg-transparent ${
-                      currentTheme ? "dark-mode btn-hover" : "light-mode"
-                    }`}
+                    className={`btn shadow-none bg-transparent ${switchTheme}`}
                     onClick={handleRenameCollection}
                     id={value.nodeId}
                     ref={containerRef}
@@ -288,10 +269,8 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                     <i className="fa fa-edit"></i>
                   </button>
                   <button
-                    className={`btn shadow-none bg-transparent ${
-                      currentTheme ? "dark-mode btn-hover" : "light-mode"
-                    }`}
-                    onClick={handleDeleteFile}
+                    className={`btn shadow-none bg-transparent ${switchTheme}`}
+                    onClick={handleDeleteCollection}
                     id={value.nodeId}
                     ref={containerRef}
                   >
@@ -348,9 +327,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                         <button
                           className={`btn shadow-none bg-transparent ${
                             isOpenChangeLeaf ? "d-none" : "d-flex"
-                          } ${
-                            currentTheme ? "dark-mode btn-hover" : "light-mode"
-                          }`}
+                          } ${switchTheme}`}
                           onClick={handleRenameLeaf}
                         >
                           <i className="fa fa-edit"></i>
@@ -358,17 +335,13 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                         <button
                           className={`btn shadow-none bg-transparent ${
                             isOpenChangeLeaf ? "d-flex" : "d-none"
-                          } ${
-                            currentTheme ? "dark-mode btn-hover" : "light-mode"
-                          }`}
+                          } ${switchTheme}`}
                           onClick={handleRenameLeaf}
                         >
                           <i className="fa fa-remove"></i>
                         </button>
                         <button
-                          className={`btn shadow-none bg-transparent ${
-                            currentTheme ? "dark-mode btn-hover" : "light-mode"
-                          }`}
+                          className={`btn shadow-none bg-transparent ${switchTheme}`}
                           onClick={() => {
                             navigator.clipboard.writeText(leafValue.label);
                           }}
@@ -376,9 +349,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
                           <i className="fa fa-clone"></i>
                         </button>
                         <button
-                          className={`btn shadow-none bg-transparent ${
-                            currentTheme ? "dark-mode btn-hover" : "light-mode"
-                          }`}
+                          className={`btn shadow-none bg-transparent ${switchTheme}`}
                           onClick={handleDeleteSingleFile}
                         >
                           <i className="fa fa-trash"></i>
