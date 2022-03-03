@@ -133,7 +133,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
   // delete single file
   const handleDeleteSingleFile = () => {
     const currentParentId = Number(containerRef.current.id);
-    if (parseFloat(selected) > currentParentId + 0.1) {
+    if (Number(selected) > currentParentId + 0.1) {
       dispatch(
         deleteSingleFile({
           id: currentParentId - 1,

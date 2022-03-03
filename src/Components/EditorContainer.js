@@ -58,6 +58,23 @@ const EditorContainer = ({ currentTheme }) => {
     setEditorState(EditorState.createEmpty());
   };
 
+  const containerIf =
+    allDocuments[Number(containerId - 1)] === undefined
+      ? "No Files Choosen"
+      : allDocuments[Number(containerId) - 1].label;
+
+  const conditionedLeaf = Number(LeafId) > 0 ? Number(LeafId) - 1 : 0;
+
+  const leafIf =
+    allDocuments[Number(containerId - 1)] !== undefined &&
+    allDocuments[Number(containerId - 1)].leaf[Number(LeafId) - 1] !==
+      undefined &&
+    allId.toString().includes(".")
+      ? allDocuments[Number(containerId - 1)].leaf[conditionedLeaf].label
+      : "";
+
+  console.log(leafIf);
+
   useEffect(() => {
     dispatch(currentEditorText(currentContent.getPlainText()));
   }, [dispatch, currentContent]);
@@ -92,8 +109,6 @@ const EditorContainer = ({ currentTheme }) => {
     editorRef.current.focus();
   }, []);
 
-  // const inputValue = convertToRaw(editorState.getCurrentContent()).blocks;
-
   const switchTheme = currentTheme ? "dark-mode btn-hover" : "light-mode";
 
   return (
@@ -104,32 +119,15 @@ const EditorContainer = ({ currentTheme }) => {
     >
       <h3 className="text-center mx-auto">WYSIWYG Editor</h3>
 
-      <div
-        className={` container ${
-          Number(containerId) >= 1 ? "d-flex" : "d-none"
-        }`}
-      >
-        <div className="mx-2 collection-tracker d-flex align-items-center gap-2">
-          <span className="text-truncate text-dark">
-            {Number(containerId) >= 1 &&
-              allDocuments[Number(containerId) - 1].label}
-          </span>
-          <i className="fa fa-angle-right text-dark"></i>
-        </div>
-        {Number(LeafId) > 0 && (
-          <div
-            className={`files-tracker text-truncate ${
-              Number(LeafId) > 0 ? "d-flex" : "d-none"
-            } `}
-          >
-            <span className="text-truncate text-dark">
-              {
-                allDocuments[Number(containerId) - 1].leaf[Number(LeafId) - 1]
-                  .label
-              }
-            </span>
-          </div>
-        )}
+      <div className={`files-tracker d-flex align-items-center gap-2`}>
+        <span className="text-truncate text-dark">{containerIf}</span>
+        <i
+          className={`fa fa-angle-right ${
+            leafIf.length > 0 ? "d-flex" : "d-none"
+          }`}
+        ></i>
+        <span className={`text-truncate text-dark `}></span>
+        <span className="text-truncate text-dark leaf-tracker">{leafIf}</span>
       </div>
 
       <div className="d-flex justify-content-between gap-2 my-2 py-1">
