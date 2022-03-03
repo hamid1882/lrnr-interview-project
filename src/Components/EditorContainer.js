@@ -1,9 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Editor, EditorState, RichUtils } from "draft-js";
 import "draft-js/dist/Draft.css";
 import {
-  currentEditorText,
   selectCurrentId,
   selectAllDocuments,
   renameFileValue,
@@ -11,9 +9,6 @@ import {
 } from "../Features/EditorSlice";
 
 const EditorContainer = ({ currentTheme }) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [currentAligned, setCurrentAligned] = useState("left");
-  const currentContent = editorState.getCurrentContent();
   const dispatch = useDispatch();
 
   const allDocuments = useSelector(selectAllDocuments);
@@ -29,35 +24,6 @@ const EditorContainer = ({ currentTheme }) => {
   const incrementer = lastLeafId + 0.1;
   const onlyTwo = incrementer.toFixed(1);
 
-  const newFile = {
-    nodeId: Number(onlyTwo),
-    label: `WYSIWYG ${
-      Number(containerId) + "." + allDocuments[lastCollection].leaf.length
-    }`,
-    value: currentContent.getPlainText(),
-  };
-
-  const saveAsNewFile = () => {
-    dispatch(
-      addNewFile({
-        id: Number(containerId) - 1,
-        addFile: newFile,
-      })
-    );
-    setEditorState(EditorState.createEmpty());
-  };
-
-  const handleUpdateValue = () => {
-    dispatch(
-      renameFileValue({
-        id: Number(containerId - 1),
-        leafId: Number(LeafId - 1),
-        value: currentContent.getPlainText(),
-      })
-    );
-    setEditorState(EditorState.createEmpty());
-  };
-
   const containerIf =
     allDocuments[Number(containerId - 1)] === undefined
       ? "No Files Choosen"
@@ -70,127 +36,95 @@ const EditorContainer = ({ currentTheme }) => {
     allDocuments[Number(containerId - 1)].leaf[Number(LeafId) - 1] !==
       undefined &&
     allId.toString().includes(".")
-      ? allDocuments[Number(containerId - 1)].leaf[conditionedLeaf].label
+      ? allDocuments[Number(containerId - 1)].leaf[conditionedLeaf]
       : "";
 
-  console.log(leafIf);
+  const renderMyValue = leafIf.value === undefined ? "" : leafIf.value;
+
+  const [currentText, setCurrentText] = useState(renderMyValue);
 
   useEffect(() => {
-    dispatch(currentEditorText(currentContent.getPlainText()));
-  }, [dispatch, currentContent]);
+    setCurrentText(renderMyValue);
+  }, [renderMyValue]);
 
-  const editorRef = useRef();
+  const newFile = {
+    nodeId: Number(onlyTwo),
+    label: `WYSIWYG ${
+      Number(containerId) + "." + allDocuments[lastCollection].leaf.length
+    }`,
+    value: currentText,
+  };
+  const [isSaved, setIsSaved] = useState(false);
 
-  const _onBoldClick = () => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, "BOLD"));
+  const saveAsNewFile = () => {
+    dispatch(
+      addNewFile({
+        id: Number(containerId) - 1,
+        addFile: newFile,
+      })
+    );
   };
 
-  const _onItalicClick = () => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, "ITALIC"));
-  };
-
-  const _onUnderlineClick = () => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, "UNDERLINE"));
-  };
-  const _onCenterAlign = () => {
-    setCurrentAligned("center");
-    editorRef.current.focus();
-  };
-  const _onRightAlign = () => {
-    setCurrentAligned("right");
-    editorRef.current.focus();
-  };
-  const _onLeftAlign = () => {
-    setCurrentAligned("left");
-    editorRef.current.focus();
+  const handleUpdateValue = () => {
+    dispatch(
+      renameFileValue({
+        id: Number(containerId - 1),
+        leafId: Number(LeafId - 1),
+        value: currentText,
+      })
+    );
+    setIsSaved(true);
   };
 
   useEffect(() => {
-    editorRef.current.focus();
-  }, []);
-
-  const switchTheme = currentTheme ? "dark-mode btn-hover" : "light-mode";
+    setIsSaved(false);
+  }, [currentText]);
 
   return (
     <div
-      className={`container mx-auto editor-width h-100 border p-2 mx-3 ${
+      className={`container mx-auto editor-width h-100 p-2 mx-3 ${
         currentTheme ? "border-secondary" : "null"
       }`}
     >
       <h3 className="text-center mx-auto">WYSIWYG Editor</h3>
 
-      <div className={`files-tracker d-flex align-items-center gap-2`}>
-        <span className="text-truncate text-dark">{containerIf}</span>
-        <i
-          className={`fa fa-angle-right ${
-            leafIf.length > 0 ? "d-flex" : "d-none"
-          }`}
-        ></i>
-        <span className={`text-truncate text-dark `}></span>
-        <span className="text-truncate text-dark leaf-tracker">{leafIf}</span>
-      </div>
-
-      <div className="d-flex justify-content-between gap-2 my-2 py-1">
-        <div className="d-flex">
-          <button
-            onClick={_onBoldClick}
-            className={`btn shadow-none btn-transparent ${switchTheme}`}
-          >
-            <i className="fa fa-bold"></i>
-          </button>
-          <button
-            onClick={_onItalicClick}
-            className={`btn shadow-none btn-transparent ${switchTheme}`}
-          >
-            <i className="fa fa-italic"></i>
-          </button>
-          <button
-            onClick={_onUnderlineClick}
-            className={`btn shadow-none btn-transparent ${switchTheme}`}
-          >
-            <i className="fa fa-underline"></i>
-          </button>
-          <button
-            onClick={_onLeftAlign}
-            className={`btn shadow-none btn-transparent ${switchTheme}`}
-          >
-            <i className="fa fa-align-left"></i>
-          </button>
-          <button
-            onClick={_onCenterAlign}
-            className={`btn shadow-none btn-transparent ${switchTheme}`}
-          >
-            <i className="fa fa-align-center"></i>
-          </button>
-          <button
-            onClick={_onRightAlign}
-            className={`btn shadow-none btn-transparent ${switchTheme}`}
-          >
-            <i className="fa fa-align-right"></i>
-          </button>
+      <div className="d-flex justify-content-between align-items-center py-1">
+        <div className={`files-tracker d-flex align-items-center gap-2 `}>
+          <span className="text-truncate">{containerIf}</span>
+          <i className={`fa fa-angle-right `}></i>
+          <span className="text-truncate leaf-tracker mx-1">
+            {leafIf.label}
+          </span>
         </div>
-        <div className="d-flex gap-2 mx-5 my-1">
+        <div className="d-flex gap-2 mx-5 save-btn">
           <button
-            className={`btn btn-success shadow-none  ${
-              currentContent.getPlainText().length > 0 && allId
-                ? "d-flex"
-                : "d-none"
-            }`}
-            onClick={saveAsNewFile}
-          >
-            <i className="fa fa-file"></i>
-          </button>
-          <button
-            className={`btn btn-warning shadow-none  ${
-              Number(containerId) >= 1 &&
-              Number(LeafId) &&
-              currentContent.getPlainText().length > 0 > 0
+            className={`btn btn-success shadow-none ${
+              currentText.length > 0 && isSaved === false && Number(LeafId)
                 ? "d-flex"
                 : "d-none"
             }`}
             onClick={handleUpdateValue}
           >
-            <i className="fa fa-pencil-square"></i>
+            <i className="fa fa-file"></i>
+          </button>
+          <button
+            className={`btn shadow-none ${isSaved ? "d-flex" : "d-none"}`}
+          >
+            <i
+              className={`fa fa-check ${
+                currentTheme ? "text-light" : "text-dark"
+              }`}
+            ></i>
+          </button>
+          <button
+            className={`btn btn-warning shadow-none  ${
+              Number(containerId) >= 1 && currentText.length > 0 && allId
+                ? "d-flex"
+                : "d-none"
+            }`}
+            onClick={saveAsNewFile}
+          >
+            <i className="fa fa-plus"></i>
           </button>
         </div>
       </div>
@@ -200,13 +134,14 @@ const EditorContainer = ({ currentTheme }) => {
           currentTheme ? "dark-mode" : "light-mode"
         }`}
       >
-        <Editor
-          editorState={editorState}
-          onChange={setEditorState}
+        <textarea
+          className={`textarea-custom-styles ${
+            currentTheme ? "dark-mode" : "light-mode"
+          }`}
+          value={currentText}
+          onChange={(e) => setCurrentText(e.target.value)}
           placeholder="Write something!"
-          ref={editorRef}
-          textAlignment={currentAligned}
-        ></Editor>
+        ></textarea>
       </div>
     </div>
   );

@@ -184,19 +184,38 @@
   width: auto;
   height: 1.5em;
   padding-left: 0.2em;
-  background-color: rgb(217, 226, 219);
+  margin-left: 10px;
+  opacity: 0.7;
 }
 
 .leaf-tracker {
   margin-left: -10px;
 }
 
+.textarea-custom-styles {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgb(80, 100, 67);
+  font-size: 20px;
+  border-radius: 0.3em;
+  margin-top: 1em;
+  padding: 0.3em;
+}
+
+.textarea-custom-styles:focus {
+  outline: none;
+}
+
+.save-btn {
+  margin: -5px;
+}
+
 @media only screen and (max-width: 650px) {
   .drawer-custom-styles {
     width: 100%;
     position: absolute;
-    top: 13%;
-    margin-left: -10px;
+    top: 15%;
+    margin-left: 10px;
     margin-right: 10px;
     height: calc(100vh - 4em);
   }
@@ -213,6 +232,6 @@
     height: 1.5em;
     padding-left: 0.2em;
     font-size: 10px;
-    background-color: rgb(217, 226, 219);
+    margin-left: 10px;
   }
 }
