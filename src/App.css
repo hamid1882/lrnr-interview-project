@@ -2,6 +2,11 @@
   margin: 0;
 }
 
+.welcome-container {
+  font-weight: bold;
+  font-family: "Syne Mono", monospace;
+}
+
 .editor {
   height: calc(100vh - 4em);
   overflow-y: scroll;
@@ -19,6 +24,10 @@
 
 .input-custom-styles:focus {
   outline: none;
+}
+
+.file-input-styles {
+  height: 200px;
 }
 
 .editor-width {

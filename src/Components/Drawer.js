@@ -51,6 +51,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
         nodeId: currentContainer + 1 + 0.1,
         label: `File ${currentContainer + 1 + ".1"}`,
         value: `Edit me i am ${currentContainer + 1 + ".1"}`,
+        type: "text",
       },
     ],
   };
@@ -124,6 +125,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
             nodeId: parseFloat(toBeFixed),
             label: `File ${parseFloat(toBeFixed)}`,
             value: `Edit me i am File ${parseFloat(toBeFixed)}`,
+            type: "text",
           },
         })
       );

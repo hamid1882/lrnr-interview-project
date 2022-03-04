@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "draft-js/dist/Draft.css";
 import {
   selectCurrentId,
   selectAllDocuments,
   renameFileValue,
   addNewFile,
+  changeFileType,
 } from "../Features/EditorSlice";
 
 const EditorContainer = ({ currentTheme }) => {
@@ -26,7 +26,7 @@ const EditorContainer = ({ currentTheme }) => {
 
   const containerIf =
     allDocuments[Number(containerId - 1)] === undefined
-      ? "No Files Choosen"
+      ? "Choose Collection"
       : allDocuments[Number(containerId) - 1].label;
 
   const conditionedLeaf = Number(LeafId) > 0 ? Number(LeafId) - 1 : 0;
@@ -47,12 +47,16 @@ const EditorContainer = ({ currentTheme }) => {
     setCurrentText(renderMyValue);
   }, [renderMyValue]);
 
+  const checkLeafIf = leafIf.value === undefined ? "text" : leafIf.value;
+  const currentDataType = checkLeafIf.includes(".jpg") ? "image" : "text";
+
   const newFile = {
     nodeId: Number(onlyTwo),
     label: `WYSIWYG ${
       Number(containerId) + "." + allDocuments[lastCollection].leaf.length
     }`,
     value: currentText,
+    type: currentDataType,
   };
   const [isSaved, setIsSaved] = useState(false);
 
@@ -71,9 +75,20 @@ const EditorContainer = ({ currentTheme }) => {
         id: Number(containerId - 1),
         leafId: Number(LeafId - 1),
         value: currentText,
+        type: currentDataType,
       })
     );
     setIsSaved(true);
+  };
+
+  const handleChangeType = () => {
+    dispatch(
+      changeFileType({
+        id: Number(containerId - 1),
+        leafId: Number(LeafId - 1),
+        type: currentDataType,
+      })
+    );
   };
 
   const [isHover, setIsHover] = useState(false);
@@ -99,15 +114,51 @@ const EditorContainer = ({ currentTheme }) => {
     setIsSaved(false);
   }, [currentText]);
 
+  // Create a new files
+
+  const [newFileName, setNewFileName] = useState("");
+  const [newFileType, setNewFileType] = useState("text");
+  const [newFileInput, setNewFileInput] = useState("");
+
+  console.log(
+    Number(containerId) - 1,
+    allDocuments[Number(containerId) - 1] === undefined
+      ? 0
+      : allDocuments[Number(containerId) - 1].leaf.length
+  );
+
+  const newFileSchema = {
+    nodeId: Number(onlyTwo),
+    label: newFileName,
+    value: newFileInput,
+    type: newFileType,
+  };
+
+  console.log(newFileSchema);
+
+  const handleCreateNewFile = () => {
+    if (newFileName !== "" && newFileType !== "" && newFileInput !== "") {
+      dispatch(
+        addNewFile({
+          id: Number(containerId) - 1,
+          addFile: newFileSchema,
+        })
+      );
+    }
+    setNewFileName("");
+    setNewFileType("");
+    setNewFileInput("");
+  };
+
   return (
     <div
       className={`container mx-auto editor-width h-100 p-2 mx-3 border-editor ${
         currentTheme ? "border-secondary" : "null"
       }`}
     >
-      <h3 className="text-center mx-auto">WYSIWYG Editor</h3>
+      <h1 className="text-center mx-auto welcome-container">Files-Explorer</h1>
 
-      <div className="d-flex justify-content-between align-items-center py-1">
+      <div className="d-flex justify-content-between align-items-center py-1 my-1">
         <div className={`files-tracker d-flex align-items-center gap-2 `}>
           <span className="text-truncate">{containerIf}</span>
           <i
@@ -120,6 +171,14 @@ const EditorContainer = ({ currentTheme }) => {
           </span>
         </div>
         <div className="d-flex gap-2 mx-5 save-btn">
+          <button
+            className={`btn btn-danger shadow-none ${
+              currentDataType === "image" ? "d-flex" : "d-none"
+            }`}
+            onClick={handleChangeType}
+          >
+            <i className="fa fa-file-picture-o"></i>
+          </button>
           <button
             className={`btn btn-success shadow-none ${
               currentText.length > 0 && isSaved === false && Number(LeafId)
@@ -179,14 +238,98 @@ const EditorContainer = ({ currentTheme }) => {
           currentTheme ? "dark-mode" : "light-mode"
         }`}
       >
+        {/* Welcome home page */}
+        <div
+          className={`container p-2 my-1 mx-auto text-center welcome-container ${
+            containerIf === "Choose Collection" ? "d-block" : "d-none"
+          }`}
+        >
+          <h1>🎉🎊Welcome to My Editor🎉🎊</h1>
+          <h5>Choose a Collection to Get Started </h5>
+        </div>
+        {/* Add new files */}
+        <div
+          className={`welcome-container container  p-2 ${
+            containerIf !== "Choose Collection" && leafIf.value === undefined
+              ? "d-block"
+              : "d-none"
+          }`}
+        >
+          <h3>Create a New File</h3>
+          <div className="my-4 row justify-content-start">
+            <div className="p-2 my-1">
+              <h5>File Name</h5>
+              <input
+                className={`input-custom-styles ${
+                  currentTheme ? "dark-mode" : "light-mode"
+                }`}
+                type="text"
+                placeholder="Enter File Name"
+                value={newFileName}
+                onChange={(e) => setNewFileName(e.target.value)}
+              ></input>
+            </div>
+            <div className="p-2 my-1">
+              <h5>File Type</h5>
+              <details className="text-secondary">
+                <summary>Available types</summary>
+                text/image
+              </details>
+              <input
+                className={`input-custom-styles ${
+                  currentTheme ? "dark-mode" : "light-mode"
+                }`}
+                type="text"
+                placeholder="Enter text/image"
+                value={newFileType}
+                onChange={(e) => setNewFileType(e.target.value)}
+              ></input>
+            </div>
+            <div className="p-2 my-1">
+              <h5>File Input</h5>
+              <details className="text-secondary">
+                <summary>Available image extentions</summary>
+                For images paste the link of an image only .jpg extention
+              </details>
+              <textarea
+                className={`w-100 input-custom-styles file-input-styles ${
+                  currentTheme ? "dark-mode" : "light-mode"
+                }`}
+                type="text"
+                placeholder="Enter text/image-link"
+                value={newFileInput}
+                onChange={(e) => setNewFileInput(e.target.value)}
+              ></textarea>
+            </div>
+          </div>
+          <button
+            onClick={handleCreateNewFile}
+            className="btn btn-success shadow-none"
+          >
+            Create File
+          </button>
+        </div>
+        {/* text editor */}
         <textarea
           className={`textarea-custom-styles ${
             currentTheme ? "dark-mode" : "light-mode"
-          }`}
+          } ${leafIf.type === "text" ? "d-block" : "d-none"}`}
           value={currentText}
           onChange={(e) => setCurrentText(e.target.value)}
           placeholder="Write something!"
         ></textarea>
+        {/* Image editor */}
+        <div
+          className={`${
+            leafIf.type === "image" ? "d-block" : "d-none"
+          } container d-flex justify-content-center align-items-center my-1 p-2`}
+        >
+          <img
+            className="img-responsive img-fluid shadow rounded"
+            src={leafIf.value}
+            alt={leafIf.label}
+          />
+        </div>
       </div>
     </div>
   );
