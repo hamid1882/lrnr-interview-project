@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "draft-js/dist/Draft.css";
 import {
@@ -76,13 +76,32 @@ const EditorContainer = ({ currentTheme }) => {
     setIsSaved(true);
   };
 
+  const [isHover, setIsHover] = useState(false);
+  const [isHoverUpdate, setIsHoverUpdate] = useState(false);
+
+  const tooltipRif = useRef();
+
+  const handleToolTip = (e) => {
+    if (e.target.id === "save") {
+      setIsHover(true);
+    }
+    if (e.target.id === "update") {
+      setIsHoverUpdate(true);
+    }
+  };
+
+  const handleToolTipOut = () => {
+    setIsHover(false);
+    setIsHoverUpdate(false);
+  };
+
   useEffect(() => {
     setIsSaved(false);
   }, [currentText]);
 
   return (
     <div
-      className={`container mx-auto editor-width h-100 p-2 mx-3 ${
+      className={`container mx-auto editor-width h-100 p-2 mx-3 border-editor ${
         currentTheme ? "border-secondary" : "null"
       }`}
     >
@@ -91,7 +110,11 @@ const EditorContainer = ({ currentTheme }) => {
       <div className="d-flex justify-content-between align-items-center py-1">
         <div className={`files-tracker d-flex align-items-center gap-2 `}>
           <span className="text-truncate">{containerIf}</span>
-          <i className={`fa fa-angle-right `}></i>
+          <i
+            className={`fa fa-angle-right ${
+              leafIf.label === undefined ? "d-none" : "d-flex"
+            }`}
+          ></i>
           <span className="text-truncate leaf-tracker mx-1">
             {leafIf.label}
           </span>
@@ -104,6 +127,10 @@ const EditorContainer = ({ currentTheme }) => {
                 : "d-none"
             }`}
             onClick={handleUpdateValue}
+            onMouseOver={handleToolTip}
+            onMouseOut={handleToolTipOut}
+            ref={tooltipRif}
+            id="save"
           >
             <i className="fa fa-file"></i>
           </button>
@@ -123,9 +150,27 @@ const EditorContainer = ({ currentTheme }) => {
                 : "d-none"
             }`}
             onClick={saveAsNewFile}
+            onMouseOver={handleToolTip}
+            onMouseOut={handleToolTipOut}
+            ref={tooltipRif}
+            id="update"
           >
             <i className="fa fa-plus"></i>
           </button>
+          <div
+            className={`${isHover ? "d-block" : "d-none"} tooltip-custom-style`}
+          >
+            Update and save file
+            <div className="tooltip-shape"> </div>
+          </div>
+          <div
+            className={`${
+              isHoverUpdate ? "d-block" : "d-none"
+            } tooltip-custom-style`}
+          >
+            Save in a New File
+            <div className="tooltip-shape-update"> </div>
+          </div>
         </div>
       </div>
 
