@@ -227,6 +227,7 @@
   padding-left: 0.4em;
   border-top-left-radius: 0.3em;
   border-bottom-right-radius: 0.3em;
+  z-index: 99;
 }
 
 .tooltip-shape {
@@ -247,6 +248,7 @@
   height: 15px;
   transform: rotate(45deg);
   background-color: #000;
+  z-index: 0;
 }
 
 @media only screen and (max-width: 650px) {
