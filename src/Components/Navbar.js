@@ -83,7 +83,7 @@ const Navbar = ({ handleDrawerClick }) => {
       </div>
       <div
         className={`d-none d-lg-flex d-flex col col-9 justify-content-start align-items-center gap-2 p-2 rounded shadow ${
-          currentTheme ? "border border-light" : "border border-dark"
+          currentTheme ? "border border-success" : "border border-dark"
         }`}
       >
         <i className="fa fa-search" aria-hidden="true"></i>

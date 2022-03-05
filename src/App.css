@@ -62,11 +62,14 @@
 
 .drawer-custom-styles {
   width: 20em;
-  height: calc(100vh - 4em);
-  overflow-y: scroll;
-  overflow-x: hidden;
+  height: 100%;
   background-color: white;
   z-index: 2;
+  border-right: 3px solid rgb(48, 82, 46);
+}
+
+.dfin-style {
+  width: 100%;
 }
 
 .drawer-collapse {

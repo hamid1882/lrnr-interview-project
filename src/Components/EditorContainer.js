@@ -7,6 +7,7 @@ import {
   addNewFile,
   changeFileType,
 } from "../Features/EditorSlice";
+import UserGuide from "./UserGuide";
 
 const EditorContainer = ({ currentTheme }) => {
   const dispatch = useDispatch();
@@ -120,13 +121,6 @@ const EditorContainer = ({ currentTheme }) => {
   const [newFileType, setNewFileType] = useState("text");
   const [newFileInput, setNewFileInput] = useState("");
 
-  console.log(
-    Number(containerId) - 1,
-    allDocuments[Number(containerId) - 1] === undefined
-      ? 0
-      : allDocuments[Number(containerId) - 1].leaf.length
-  );
-
   const newFileSchema = {
     nodeId: Number(onlyTwo),
     label: newFileName,
@@ -134,10 +128,14 @@ const EditorContainer = ({ currentTheme }) => {
     type: newFileType,
   };
 
-  console.log(newFileSchema);
-
   const handleCreateNewFile = () => {
-    if (newFileName !== "" && newFileType !== "" && newFileInput !== "") {
+    if (
+      (newFileName !== "" &&
+        newFileType !== "" &&
+        newFileInput !== "" &&
+        newFileType === "text") ||
+      newFileType === "image"
+    ) {
       dispatch(
         addNewFile({
           id: Number(containerId) - 1,
@@ -246,6 +244,7 @@ const EditorContainer = ({ currentTheme }) => {
         >
           <h1>🎉🎊Welcome to My Editor🎉🎊</h1>
           <h5>Choose a Collection to Get Started </h5>
+          <UserGuide />
         </div>
         {/* Add new files */}
         <div
@@ -289,13 +288,13 @@ const EditorContainer = ({ currentTheme }) => {
               <h5>File Input</h5>
               <details className="text-secondary">
                 <summary>Available image extentions</summary>
-                For images paste the link of an image only .jpg extention
+                .jpg .png
               </details>
               <textarea
                 className={`w-100 input-custom-styles file-input-styles ${
                   currentTheme ? "dark-mode" : "light-mode"
                 }`}
-                type="text"
+                type="link"
                 placeholder="Enter text/image-link"
                 value={newFileInput}
                 onChange={(e) => setNewFileInput(e.target.value)}

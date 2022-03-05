@@ -208,7 +208,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
         currentTheme ? "dark-mode" : "light-mode"
       }`}
     >
-      <div className="row shadow mb-2">
+      <div className="row shadow mb-2 dfin-style mx-auto">
         <button
           className={`btn shadow-none col col-4 ${
             currentTheme ? "text-light" : ""
@@ -238,7 +238,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
         aria-label="file system navigator"
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
-        sx={{ height: 850, flexGrow: 1, maxWidth: 450, overflowY: "auto" }}
+        sx={{ height: 645, flexGrow: 1, maxWidth: 450, overflowY: "auto" }}
         onNodeSelect={handleSelect}
         selected={selected}
       >
