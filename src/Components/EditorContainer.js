@@ -7,6 +7,7 @@ import {
   addNewFile,
   changeFileType,
 } from "../Features/EditorSlice";
+import Carousel from "./Carousel";
 import UserGuide from "./UserGuide";
 
 const EditorContainer = ({ currentTheme }) => {
@@ -244,6 +245,7 @@ const EditorContainer = ({ currentTheme }) => {
         >
           <h1>🎉🎊Welcome to My Editor🎉🎊</h1>
           <h5>Choose a Collection to Get Started </h5>
+          <Carousel />
           <UserGuide />
         </div>
         {/* Add new files */}
