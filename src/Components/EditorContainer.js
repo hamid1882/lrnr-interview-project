@@ -261,7 +261,7 @@ const EditorContainer = ({ currentTheme }) => {
             <div className="p-2 my-1">
               <h5>File Name</h5>
               <input
-                className={`input-custom-styles ${
+                className={`input-custom-styles border rounded ${
                   currentTheme ? "dark-mode" : "light-mode"
                 }`}
                 type="text"
@@ -277,7 +277,7 @@ const EditorContainer = ({ currentTheme }) => {
                 text/image
               </details>
               <input
-                className={`input-custom-styles ${
+                className={`input-custom-styles border rounded ${
                   currentTheme ? "dark-mode" : "light-mode"
                 }`}
                 type="text"
@@ -293,7 +293,7 @@ const EditorContainer = ({ currentTheme }) => {
                 .jpg .png
               </details>
               <textarea
-                className={`w-100 input-custom-styles file-input-styles ${
+                className={`w-100 input-custom-styles file-input-styles border rounded ${
                   currentTheme ? "dark-mode" : "light-mode"
                 }`}
                 type="link"

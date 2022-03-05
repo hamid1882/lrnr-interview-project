@@ -204,7 +204,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
 
   return (
     <div
-      className={`drawer-custom-styles  ${collapseDrawer} ${
+      className={`drawer-custom-styles   ${collapseDrawer} ${
         currentTheme ? "dark-mode" : "light-mode"
       }`}
     >

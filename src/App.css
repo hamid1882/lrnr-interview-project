@@ -65,11 +65,13 @@
   height: 100%;
   background-color: white;
   z-index: 2;
-  border-right: 3px solid rgb(48, 82, 46);
+  border-right: 10px solid rgb(166, 177, 166);
+  margin-left: -10px;
 }
 
 .dfin-style {
   width: 100%;
+  margin-left: -10px;
 }
 
 .drawer-collapse {
