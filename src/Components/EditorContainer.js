@@ -243,7 +243,9 @@ const EditorContainer = ({ currentTheme }) => {
             containerIf === "Choose Collection" ? "d-block" : "d-none"
           }`}
         >
-          <h1>🎉🎊Welcome to My Editor🎉🎊</h1>
+          <h4 className="text-start text-md-center fs-4 fs-md-1">
+            🎉🎊Welcome to My Editor🎉🎊
+          </h4>
           <h5>Choose a Collection to Get Started </h5>
           <Carousel />
           <UserGuide />
