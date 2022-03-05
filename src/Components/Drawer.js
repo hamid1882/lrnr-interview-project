@@ -15,7 +15,7 @@ import {
   renameSingleFile,
 } from "../Features/EditorSlice";
 
-const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
+const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
   const [selected, setSelected] = React.useState([]);
   const dispatch = useDispatch();
   const allData = useSelector(selectAllDocuments);
@@ -234,162 +234,185 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme }) => {
           </button>
         </div>
       </div>
-      <TreeView
-        aria-label="file system navigator"
-        defaultCollapseIcon={<ExpandMoreIcon />}
-        defaultExpandIcon={<ChevronRightIcon />}
-        sx={{ height: 645, flexGrow: 1, maxWidth: 450, overflowY: "auto" }}
-        onNodeSelect={handleSelect}
-        selected={selected}
+      <div
+        className={` container text-center welcome-container ${
+          isTab === "graph" ? "tab-open" : "tab-collapse"
+        }`}
       >
-        <TreeItem nodeId="0" label="All Documents">
-          {allData &&
-            allData.map((value, idx) => (
-              <TreeItem
-                nodeId={String(value.nodeId)}
-                label={value.label}
-                collapseIcon={<ExpandMoreIcon />}
-                key={idx}
-              >
-                <div
-                  className={`drawer-btn ${
-                    Number(selected) === value.nodeId ? "d-flex" : "d-none"
-                  }`}
+        <h2>Graph View...</h2>
+      </div>
+      <div
+        className={` container text-center welcome-container ${
+          isTab === "board" ? "tab-open" : "tab-collapse"
+        }`}
+      >
+        <h2>All Boards...</h2>
+      </div>
+      <div
+        className={` container text-center welcome-container ${
+          isTab === "recent" ? "tab-open" : "tab-collapse"
+        }`}
+      >
+        <h2>Recent Files...</h2>
+      </div>
+      <div className={`${isTab === "all" ? "tab-open" : "tab-collapse"}`}>
+        <TreeView
+          aria-label="file system navigator"
+          defaultCollapseIcon={<ExpandMoreIcon />}
+          defaultExpandIcon={<ChevronRightIcon />}
+          sx={{ height: 645, flexGrow: 1, maxWidth: 450, overflowY: "auto" }}
+          onNodeSelect={handleSelect}
+          selected={selected}
+        >
+          <TreeItem nodeId="0" label="All Collections">
+            {allData &&
+              allData.map((value, idx) => (
+                <TreeItem
+                  nodeId={String(value.nodeId)}
+                  label={value.label}
+                  collapseIcon={<ExpandMoreIcon />}
+                  key={idx}
                 >
-                  <button
-                    className={`btn shadow-none bg-transparent ${switchTheme}`}
-                    onClick={handleNewFile}
-                    id={value.nodeId}
-                    ref={containerRef}
+                  <div
+                    className={`drawer-btn ${
+                      Number(selected) === value.nodeId ? "d-flex" : "d-none"
+                    }`}
                   >
-                    <i className="fa fa-plus"></i>
-                  </button>
-                  <button
-                    className={`btn shadow-none bg-transparent ${switchTheme}`}
-                    onClick={handleRenameCollection}
-                    id={value.nodeId}
-                    ref={containerRef}
-                  >
-                    <i className="fa fa-edit"></i>
-                  </button>
-                  <button
-                    className={`btn shadow-none bg-transparent ${switchTheme}`}
-                    onClick={handleDeleteCollection}
-                    id={value.nodeId}
-                    ref={containerRef}
-                  >
-                    <i className="fa fa-trash"></i>
-                  </button>
-                </div>
-
-                <div
-                  className={`p-2 collection-rename-container ${
-                    isOpenChangeName && Number(selected) === value.nodeId
-                      ? "d-block"
-                      : "d-none"
-                  }`}
-                >
-                  <input
-                    type="text"
-                    className="collection-rename-input"
-                    onChange={handleRenameChange}
-                    value={renameCollectionValue}
-                    onKeyPress={handleOnKeyPress}
-                  />
-                  <div className="d-flex gap-2 my-2">
                     <button
-                      className="btn btn-success shadow-none"
-                      onClick={handleSaveCollectionName}
+                      className={`btn shadow-none bg-transparent ${switchTheme}`}
+                      onClick={handleNewFile}
+                      id={value.nodeId}
+                      ref={containerRef}
                     >
-                      Done
+                      <i className="fa fa-plus"></i>
                     </button>
                     <button
-                      className="btn btn-danger shadow-none"
+                      className={`btn shadow-none bg-transparent ${switchTheme}`}
                       onClick={handleRenameCollection}
+                      id={value.nodeId}
+                      ref={containerRef}
                     >
-                      Cancel
+                      <i className="fa fa-edit"></i>
+                    </button>
+                    <button
+                      className={`btn shadow-none bg-transparent ${switchTheme}`}
+                      onClick={handleDeleteCollection}
+                      id={value.nodeId}
+                      ref={containerRef}
+                    >
+                      <i className="fa fa-trash"></i>
                     </button>
                   </div>
-                </div>
-                {value.leaf &&
-                  value.leaf.map((leafValue, idx) => (
-                    <div key={leafValue.nodeId}>
-                      <TreeItem
-                        nodeId={String(leafValue.nodeId)}
-                        label={leafValue.label}
-                        ref={leafRef}
-                        id={leafValue.label}
-                      ></TreeItem>
-                      <div
-                        className={`drawer-btn justify-content-center align-items-center ${
-                          Number(selected) === leafValue.nodeId &&
-                          Number(containerRef.current.id) === value.nodeId
-                            ? "d-flex "
-                            : "d-none"
-                        }`}
+
+                  <div
+                    className={`p-2 collection-rename-container ${
+                      isOpenChangeName && Number(selected) === value.nodeId
+                        ? "d-block"
+                        : "d-none"
+                    }`}
+                  >
+                    <input
+                      type="text"
+                      className="collection-rename-input"
+                      onChange={handleRenameChange}
+                      value={renameCollectionValue}
+                      onKeyPress={handleOnKeyPress}
+                    />
+                    <div className="d-flex gap-2 my-2">
+                      <button
+                        className="btn btn-success shadow-none"
+                        onClick={handleSaveCollectionName}
                       >
-                        <button
-                          className={`btn shadow-none bg-transparent ${
-                            isOpenChangeLeaf ? "d-none" : "d-flex"
-                          } ${switchTheme}`}
-                          onClick={handleRenameLeaf}
-                        >
-                          <i className="fa fa-edit"></i>
-                        </button>
-                        <button
-                          className={`btn shadow-none bg-transparent ${
-                            isOpenChangeLeaf ? "d-flex" : "d-none"
-                          } ${switchTheme}`}
-                          onClick={handleRenameLeaf}
-                        >
-                          <i className="fa fa-remove"></i>
-                        </button>
-                        <button
-                          className={`btn shadow-none bg-transparent ${switchTheme}`}
-                          onClick={() => {
-                            navigator.clipboard.writeText(leafValue.value);
-                          }}
-                        >
-                          <i className="fa fa-clone"></i>
-                        </button>
-                        <button
-                          className={`btn shadow-none bg-transparent ${switchTheme}`}
-                          onClick={handleDeleteSingleFile}
-                        >
-                          <i className="fa fa-trash"></i>
-                        </button>
-                      </div>
-                      <div
-                        className={`p-2 collection-rename-leaf ${
-                          isOpenChangeLeaf &&
-                          Number(selected) === leafValue.nodeId
-                            ? "d-block"
-                            : "d-none"
-                        }`}
+                        Done
+                      </button>
+                      <button
+                        className="btn btn-danger shadow-none"
+                        onClick={handleRenameCollection}
                       >
-                        <input
-                          type="text"
-                          className=" border-0 shadow-none"
-                          onChange={handleSaveLeafName}
-                          value={renameLeafValue}
-                          ref={leafInputRef}
-                          onKeyPress={handleOnKeyLeafPress}
-                        />
-                        <button
-                          className={`btn shadow-none btn-check-rename ${
-                            renameLeafValue.length > 1 ? "d-block" : "d-none"
-                          }`}
-                          onClick={handleChangeLeafName}
-                        >
-                          <i className="fa fa-check text-success"></i>
-                        </button>
-                      </div>
+                        Cancel
+                      </button>
                     </div>
-                  ))}
-              </TreeItem>
-            ))}
-        </TreeItem>
-      </TreeView>
+                  </div>
+                  {value.leaf &&
+                    value.leaf.map((leafValue, idx) => (
+                      <div key={leafValue.nodeId}>
+                        <TreeItem
+                          nodeId={String(leafValue.nodeId)}
+                          label={leafValue.label}
+                          ref={leafRef}
+                          id={leafValue.label}
+                        ></TreeItem>
+                        <div
+                          className={`drawer-btn justify-content-center align-items-center ${
+                            Number(selected) === leafValue.nodeId &&
+                            Number(containerRef.current.id) === value.nodeId
+                              ? "d-flex "
+                              : "d-none"
+                          }`}
+                        >
+                          <button
+                            className={`btn shadow-none bg-transparent ${
+                              isOpenChangeLeaf ? "d-none" : "d-flex"
+                            } ${switchTheme}`}
+                            onClick={handleRenameLeaf}
+                          >
+                            <i className="fa fa-edit"></i>
+                          </button>
+                          <button
+                            className={`btn shadow-none bg-transparent ${
+                              isOpenChangeLeaf ? "d-flex" : "d-none"
+                            } ${switchTheme}`}
+                            onClick={handleRenameLeaf}
+                          >
+                            <i className="fa fa-remove"></i>
+                          </button>
+                          <button
+                            className={`btn shadow-none bg-transparent ${switchTheme}`}
+                            onClick={() => {
+                              navigator.clipboard.writeText(leafValue.value);
+                            }}
+                          >
+                            <i className="fa fa-clone"></i>
+                          </button>
+                          <button
+                            className={`btn shadow-none bg-transparent ${switchTheme}`}
+                            onClick={handleDeleteSingleFile}
+                          >
+                            <i className="fa fa-trash"></i>
+                          </button>
+                        </div>
+                        <div
+                          className={`p-2 collection-rename-leaf ${
+                            isOpenChangeLeaf &&
+                            Number(selected) === leafValue.nodeId
+                              ? "d-block"
+                              : "d-none"
+                          }`}
+                        >
+                          <input
+                            type="text"
+                            className=" border-0 shadow-none"
+                            onChange={handleSaveLeafName}
+                            value={renameLeafValue}
+                            ref={leafInputRef}
+                            onKeyPress={handleOnKeyLeafPress}
+                          />
+                          <button
+                            className={`btn shadow-none btn-check-rename ${
+                              renameLeafValue.length > 1 ? "d-block" : "d-none"
+                            }`}
+                            onClick={handleChangeLeafName}
+                          >
+                            <i className="fa fa-check text-success"></i>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </TreeItem>
+              ))}
+          </TreeItem>
+        </TreeView>
+      </div>
     </div>
   );
 };

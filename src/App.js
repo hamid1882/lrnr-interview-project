@@ -9,6 +9,7 @@ import "./App.css";
 
 const App = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isTab, setIsTab] = useState("all");
   const currentTheme = useSelector(selectCurrentTheme);
 
   const handleDrawerClick = () => {
@@ -23,12 +24,17 @@ const App = () => {
         isDrawerOpen={isDrawerOpen}
         handleDrawerClick={handleDrawerClick}
       />
-      <RenderOptions currentTheme={currentTheme} />
+      <RenderOptions
+        currentTheme={currentTheme}
+        setIsTab={setIsTab}
+        isTab={isTab}
+      />
       <div className="mx-auto d-flex p-2 ">
         <Drawer
           isDrawerOpen={isDrawerOpen}
           handleDrawerClick={handleDrawerClick}
           currentTheme={currentTheme}
+          isTab={isTab}
         />
         <EditorContainer currentTheme={currentTheme} />
       </div>

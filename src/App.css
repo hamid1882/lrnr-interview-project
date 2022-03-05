@@ -157,7 +157,7 @@
   top: 60px;
   right: 1015;
   width: 300px;
-  z-index: 3;
+  z-index: 4;
 }
 
 .user-btns:hover {
@@ -265,14 +265,26 @@
   z-index: 0;
 }
 
+.tab-collapse {
+  position: absolute;
+  transform: translateX(-100%);
+  transition: all 0.3s;
+}
+
+.tab-open {
+  transform: translateX(0);
+  transition: all 0.3s;
+  height: 100vh;
+}
+
 @media only screen and (max-width: 650px) {
   .drawer-custom-styles {
-    width: 93%;
+    width: 100%;
     position: absolute;
     top: 15%;
-    margin-left: 10px;
-    margin-right: 10px;
-    height: calc(100vh - 4em);
+    height: 100%;
+    border-right: 10px solid rgb(166, 177, 166);
+    z-index: 3;
   }
   .editor-width {
     width: 100%;
