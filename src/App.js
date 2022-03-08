@@ -25,7 +25,7 @@ const App = () => {
         handleDrawerClick={handleDrawerClick}
       />
       <Menubar currentTheme={currentTheme} setIsTab={setIsTab} isTab={isTab} />
-      <div className="mx-auto d-flex p-2 ">
+      <div className="mx-auto d-flex p-2">
         <Drawer
           isDrawerOpen={isDrawerOpen}
           handleDrawerClick={handleDrawerClick}

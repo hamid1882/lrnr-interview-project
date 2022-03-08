@@ -7,13 +7,14 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import {
   selectAllDocuments,
   renderCurrentContainer,
-  addNewCollection,
   deleteCollection,
   renameCollection,
   deleteSingleFile,
   addNewFile,
   renameSingleFile,
 } from "../Features/EditorSlice";
+import DrawerCustomFunctions from "./DrawerCustomFunctions";
+import Dfin from "./Dfin";
 
 const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
   const [selected, setSelected] = React.useState([]);
@@ -26,47 +27,25 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
   // Leaf's reference
   const leafRef = useRef();
 
-  // get all the nodeid's onSelect
+  // get all the node id's onSelect
   const handleSelect = (event, nodeIds) => {
-    setSelected(nodeIds);
+    setSelected(Number(nodeIds));
   };
 
   // dispatching current selected node id
   useEffect(() => {
-    dispatch(renderCurrentContainer(Number(selected)));
+    dispatch(renderCurrentContainer(selected));
   }, [dispatch, selected]);
 
-  // id of the last container
-  const currentContainer = allData[allData.length - 1].nodeId;
+  // Insert a new collection
+  const { handleAddNewCollection } = DrawerCustomFunctions();
 
   const [isOpenChangeName, setIsOpenChangeName] = useState(false);
 
-  // insert new collection schema
-  const newCollection = {
-    nodeId: currentContainer + 1,
-    label: `Collection ${currentContainer + 1}`,
-    id: currentContainer + 1,
-    leaf: [
-      {
-        nodeId: currentContainer + 1 + 0.1,
-        label: `File ${currentContainer + 1 + ".1"}`,
-        value: `Edit me i am ${currentContainer + 1 + ".1"}`,
-        type: "text",
-      },
-    ],
-  };
-
-  // Add new collection
-  const handleAddNewCollection = () => {
-    if (currentContainer <= 8) {
-      dispatch(addNewCollection(newCollection));
-    }
-  };
-
   // delete collection
   const handleDeleteCollection = () => {
-    if (Number(selected) > 1) {
-      dispatch(deleteCollection(Number(selected)));
+    if (selected > 1) {
+      dispatch(deleteCollection(selected));
     }
   };
 
@@ -135,7 +114,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
   // delete single file
   const handleDeleteSingleFile = () => {
     const currentParentId = Number(containerRef.current.id);
-    if (Number(selected) > currentParentId + 0.1) {
+    if (selected > currentParentId + 0.1) {
       dispatch(
         deleteSingleFile({
           id: currentParentId - 1,
@@ -159,7 +138,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
   };
 
   const handleChangeLeafName = () => {
-    const currentLeaf = Number(selected);
+    const currentLeaf = selected;
     const currentParentId = Number(containerRef.current.id);
     const currentLeafId = currentLeaf.toString().slice(2, 3);
     if (currentLeafId <= 9) {
@@ -176,7 +155,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
   };
 
   const handleOnKeyLeafPress = (event) => {
-    const currentLeaf = Number(selected);
+    const currentLeaf = selected;
     const currentParentId = Number(containerRef.current.id);
     const currentLeafId = currentLeaf.toString().slice(2, 3);
     if (currentLeafId <= 9 && event.key === "Enter") {
@@ -202,60 +181,31 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
   const collapseDrawer = isDrawerOpen ? "drawer-open" : "drawer-collapse";
   const switchTheme = currentTheme ? "dark-mode btn-hover" : "light-mode";
 
+  // Check menu's
+
+  const isAllMenu = isTab === "all" ? "tab-open" : "tab-collapse";
+  const isGraphMenu = isTab === "graph" ? "tab-open" : "tab-collapse";
+  const isBoard = isTab === "board" ? "tab-open" : "tab-collapse";
+  const isRecent = isTab === "recent" ? "tab-open" : "tab-collapse";
+
   return (
-    <div
-      className={`drawer-custom-styles   ${collapseDrawer} ${
-        currentTheme ? "dark-mode" : "light-mode"
-      }`}
-    >
-      <div className="row shadow mb-2 dfin-style mx-auto">
-        <button
-          className={`btn shadow-none col col-4 ${
-            currentTheme ? "text-light" : ""
-          }`}
-        >
-          DFIN
-        </button>
-        <div className="col col-8 d-flex justify-content-end">
-          <button
-            className={`btn shadow-none ${switchTheme}`}
-            onClick={handleAddNewCollection}
-          >
-            <i className="fa fa-plus"></i>
-          </button>
-          <button className={`btn shadow-none ${switchTheme}`}>
-            <i className="fa fa-expand"></i>
-          </button>
-          <button
-            className={`btn shadow-none ${switchTheme}`}
-            onClick={handleDrawerClick}
-          >
-            <i className="fa fa-angle-double-left"></i>
-          </button>
-        </div>
-      </div>
-      <div
-        className={` container text-center welcome-container ${
-          isTab === "graph" ? "tab-open" : "tab-collapse"
-        }`}
-      >
+    <div className={`drawer-custom-styles ${collapseDrawer} ${switchTheme}`}>
+      <Dfin
+        currentTheme={currentTheme}
+        switchTheme={switchTheme}
+        handleAddNewCollection={handleAddNewCollection}
+        handleDrawerClick={handleDrawerClick}
+      />
+      <div className={`container text-center welcome-container ${isGraphMenu}`}>
         <h2>Graph View...</h2>
       </div>
-      <div
-        className={` container text-center welcome-container ${
-          isTab === "board" ? "tab-open" : "tab-collapse"
-        }`}
-      >
+      <div className={`container text-center welcome-container ${isBoard}`}>
         <h2>All Boards...</h2>
       </div>
-      <div
-        className={` container text-center welcome-container ${
-          isTab === "recent" ? "tab-open" : "tab-collapse"
-        }`}
-      >
+      <div className={`container text-center welcome-container ${isRecent}`}>
         <h2>Recent Files...</h2>
       </div>
-      <div className={`${isTab === "all" ? "tab-open" : "tab-collapse"}`}>
+      <div className={isAllMenu}>
         <TreeView
           aria-label="file system navigator"
           defaultCollapseIcon={<ExpandMoreIcon />}
@@ -275,7 +225,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
                 >
                   <div
                     className={`drawer-btn ${
-                      Number(selected) === value.nodeId ? "d-flex" : "d-none"
+                      selected === value.nodeId ? "d-flex" : "d-none"
                     }`}
                   >
                     <button
@@ -306,7 +256,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
 
                   <div
                     className={`p-2 collection-rename-container ${
-                      isOpenChangeName && Number(selected) === value.nodeId
+                      isOpenChangeName && selected === value.nodeId
                         ? "d-block"
                         : "d-none"
                     }`}
@@ -344,7 +294,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
                         ></TreeItem>
                         <div
                           className={`drawer-btn justify-content-center align-items-center ${
-                            Number(selected) === leafValue.nodeId &&
+                            selected === leafValue.nodeId &&
                             Number(containerRef.current.id) === value.nodeId
                               ? "d-flex "
                               : "d-none"
@@ -383,8 +333,7 @@ const Drawer = ({ handleDrawerClick, isDrawerOpen, currentTheme, isTab }) => {
                         </div>
                         <div
                           className={`p-2 collection-rename-leaf ${
-                            isOpenChangeLeaf &&
-                            Number(selected) === leafValue.nodeId
+                            isOpenChangeLeaf && selected === leafValue.nodeId
                               ? "d-block"
                               : "d-none"
                           }`}

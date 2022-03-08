@@ -1,7 +1,7 @@
 import React from "react";
-import DarkMode from "../Images/dark-mode.png";
-import ImageRender from "../Images/image-render.png";
-import TextEditor from "../Images/text-editor.png";
+import DarkMode from "../Assets/dark-mode.png";
+import ImageRender from "../Assets/image-render.png";
+import TextEditor from "../Assets/text-editor.png";
 
 const Carousel = () => {
   return (
