@@ -1,6 +1,6 @@
 import React from "react";
 
-const RenderOptions = ({ currentTheme, isTab, setIsTab }) => {
+const Menubar = ({ currentTheme, isTab, setIsTab }) => {
   const switchTheme = currentTheme ? "dark-mode btn-hover" : "light-mode";
 
   const handleCurrentTab = (e) => {
@@ -57,4 +57,4 @@ const RenderOptions = ({ currentTheme, isTab, setIsTab }) => {
   );
 };
 
-export default RenderOptions;
+export default Menubar;

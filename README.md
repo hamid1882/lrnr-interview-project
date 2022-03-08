@@ -1,17 +1,17 @@
 Tasks:
 
-1 - Hamburger Menu – Provides options for users to switch modules – Onclick opens a drawer
-2 – Items render options. Allows to switch between a tree view to a graph view.
-3 - Graph view of the items (just a tab - no need to have any functional view)
-4 – Controls to add containers
-5 – Hierarchical view of the items
-6 – Controls to add items to containers
-7 – Current active item
-8 – Editing options available to format a word
-9 – Formatting options for the section heading
-10 – Providing options to add widgets like Video, Assessment-Item, etc.
-11 – Option to invite more team members for collaboration
-12 – User options to update the profile, switch the authoring-theme, logout, etc.
+1 - Hamburger Menu – Provides options for users to switch modules – Onclick opens a drawer \n
+2 – Items render options. Allows to switch between a tree view to a graph view. \n
+3 - Graph view of the items (just a tab - no need to have any functional view) \n
+4 – Controls to add containers \n
+5 – Hierarchical view of the items \n
+6 – Controls to add items to containers \n
+7 – Current active item \n
+8 – Editing options available to format a word \n
+9 – Formatting options for the section heading \n
+10 – Providing options to add widgets like Video, Assessment-Item, etc. \n
+11 – Option to invite more team members for collaboration \n
+12 – User options to update the profile, switch the authoring-theme, logout, etc. \n
 
 # Getting Started with Create React App
 

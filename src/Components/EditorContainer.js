@@ -14,34 +14,35 @@ const EditorContainer = ({ currentTheme }) => {
   const dispatch = useDispatch();
 
   const allDocuments = useSelector(selectAllDocuments);
-  const allId = useSelector(selectCurrentId);
+  const selectedNodeId = useSelector(selectCurrentId);
 
-  const containerId = allId.toString().charAt(0);
-  const LeafId = allId.toString().charAt(2);
+  const containerId = selectedNodeId.toString().charAt(0);
+  const leafId = selectedNodeId.toString().charAt(2);
 
   // id's of container and leaf elements
   const lastCollection = allDocuments.length - 1;
   const lastLeaf = allDocuments[lastCollection].leaf.length - 1;
-  const lastLeafId = allDocuments[lastCollection].leaf[lastLeaf].nodeId;
-  const incrementer = lastLeafId + 0.1;
+  const lastleafId = allDocuments[lastCollection].leaf[lastLeaf].nodeId;
+  const incrementer = lastleafId + 0.1;
   const onlyTwo = incrementer.toFixed(1);
 
-  const containerIf =
+  const currentCollection =
     allDocuments[Number(containerId - 1)] === undefined
       ? "Choose Collection"
       : allDocuments[Number(containerId) - 1].label;
 
-  const conditionedLeaf = Number(LeafId) > 0 ? Number(LeafId) - 1 : 0;
+  const conditionedLeaf = Number(leafId) > 0 ? Number(leafId) - 1 : 0;
 
-  const leafIf =
+  const currentLeaf =
     allDocuments[Number(containerId - 1)] !== undefined &&
-    allDocuments[Number(containerId - 1)].leaf[Number(LeafId) - 1] !==
+    allDocuments[Number(containerId - 1)].leaf[Number(leafId) - 1] !==
       undefined &&
-    allId.toString().includes(".")
+    selectedNodeId.toString().includes(".")
       ? allDocuments[Number(containerId - 1)].leaf[conditionedLeaf]
       : "";
 
-  const renderMyValue = leafIf.value === undefined ? "" : leafIf.value;
+  const renderMyValue =
+    currentLeaf.value === undefined ? "" : currentLeaf.value;
 
   const [currentText, setCurrentText] = useState(renderMyValue);
 
@@ -49,8 +50,9 @@ const EditorContainer = ({ currentTheme }) => {
     setCurrentText(renderMyValue);
   }, [renderMyValue]);
 
-  const checkLeafIf = leafIf.value === undefined ? "text" : leafIf.value;
-  const currentDataType = checkLeafIf.includes(".jpg") ? "image" : "text";
+  const checkcurrentLeaf =
+    currentLeaf.value === undefined ? "text" : currentLeaf.value;
+  const currentDataType = checkcurrentLeaf.includes(".jpg") ? "image" : "text";
 
   const newFile = {
     nodeId: Number(onlyTwo),
@@ -60,6 +62,7 @@ const EditorContainer = ({ currentTheme }) => {
     value: currentText,
     type: currentDataType,
   };
+
   const [isSaved, setIsSaved] = useState(false);
 
   const saveAsNewFile = () => {
@@ -75,7 +78,7 @@ const EditorContainer = ({ currentTheme }) => {
     dispatch(
       renameFileValue({
         id: Number(containerId - 1),
-        leafId: Number(LeafId - 1),
+        leafId: Number(leafId - 1),
         value: currentText,
         type: currentDataType,
       })
@@ -87,7 +90,7 @@ const EditorContainer = ({ currentTheme }) => {
     dispatch(
       changeFileType({
         id: Number(containerId - 1),
-        leafId: Number(LeafId - 1),
+        leafId: Number(leafId - 1),
         type: currentDataType,
       })
     );
@@ -96,7 +99,7 @@ const EditorContainer = ({ currentTheme }) => {
   const [isHover, setIsHover] = useState(false);
   const [isHoverUpdate, setIsHoverUpdate] = useState(false);
 
-  const tooltipRif = useRef();
+  const tooltipRef = useRef();
 
   const handleToolTip = (e) => {
     if (e.target.id === "save") {
@@ -159,14 +162,14 @@ const EditorContainer = ({ currentTheme }) => {
 
       <div className="d-flex justify-content-between align-items-center py-1 my-1">
         <div className={`files-tracker d-flex align-items-center gap-2 `}>
-          <span className="text-truncate">{containerIf}</span>
+          <span className="text-truncate">{currentCollection}</span>
           <i
             className={`fa fa-angle-right ${
-              leafIf.label === undefined ? "d-none" : "d-flex"
+              currentLeaf.label === undefined ? "d-none" : "d-flex"
             }`}
           ></i>
           <span className="text-truncate leaf-tracker mx-1">
-            {leafIf.label}
+            {currentLeaf.label}
           </span>
         </div>
         <div className="d-flex gap-2 mx-5 save-btn">
@@ -180,14 +183,14 @@ const EditorContainer = ({ currentTheme }) => {
           </button>
           <button
             className={`btn btn-success shadow-none ${
-              currentText.length > 0 && isSaved === false && Number(LeafId)
+              currentText.length > 0 && isSaved === false && Number(leafId)
                 ? "d-flex"
                 : "d-none"
             }`}
             onClick={handleUpdateValue}
             onMouseOver={handleToolTip}
             onMouseOut={handleToolTipOut}
-            ref={tooltipRif}
+            ref={tooltipRef}
             id="save"
           >
             <i className="fa fa-file"></i>
@@ -203,14 +206,16 @@ const EditorContainer = ({ currentTheme }) => {
           </button>
           <button
             className={`btn btn-warning shadow-none  ${
-              Number(containerId) >= 1 && currentText.length > 0 && allId
+              Number(containerId) >= 1 &&
+              currentText.length > 0 &&
+              selectedNodeId
                 ? "d-flex"
                 : "d-none"
             }`}
             onClick={saveAsNewFile}
             onMouseOver={handleToolTip}
             onMouseOut={handleToolTipOut}
-            ref={tooltipRif}
+            ref={tooltipRef}
             id="update"
           >
             <i className="fa fa-plus"></i>
@@ -240,7 +245,9 @@ const EditorContainer = ({ currentTheme }) => {
         {/* Welcome home page */}
         <div
           className={`container p-2 my-1 mx-auto text-center welcome-container ${
-            containerIf === "Choose Collection" ? "d-block" : "d-none"
+            currentCollection === "Choose Collection"
+              ? "open-editor-menu"
+              : "collapse-editor-menu"
           }`}
         >
           <h4 className="text-start text-md-center fs-4 fs-md-1">
@@ -253,9 +260,10 @@ const EditorContainer = ({ currentTheme }) => {
         {/* Add new files */}
         <div
           className={`welcome-container container  p-2 ${
-            containerIf !== "Choose Collection" && leafIf.value === undefined
-              ? "d-block"
-              : "d-none"
+            currentCollection !== "Choose Collection" &&
+            currentLeaf.value === undefined
+              ? "open-editor-menu"
+              : "collapse-editor-menu"
           }`}
         >
           <h3>Create a New File</h3>
@@ -316,7 +324,11 @@ const EditorContainer = ({ currentTheme }) => {
         <textarea
           className={`textarea-custom-styles ${
             currentTheme ? "dark-mode" : "light-mode"
-          } ${leafIf.type === "text" ? "d-block" : "d-none"}`}
+          } ${
+            currentLeaf.type === "text"
+              ? "open-editor-menu"
+              : "collapse-editor-menu"
+          }`}
           value={currentText}
           onChange={(e) => setCurrentText(e.target.value)}
           placeholder="Write something!"
@@ -324,13 +336,15 @@ const EditorContainer = ({ currentTheme }) => {
         {/* Image editor */}
         <div
           className={`${
-            leafIf.type === "image" ? "d-block" : "d-none"
+            currentLeaf.type === "image"
+              ? "open-editor-menu"
+              : "collapse-editor-menu"
           } container d-flex justify-content-center align-items-center my-1 p-2`}
         >
           <img
             className="img-responsive img-fluid shadow rounded"
-            src={leafIf.value}
-            alt={leafIf.label}
+            src={currentLeaf.value}
+            alt={currentLeaf.label}
           />
         </div>
       </div>

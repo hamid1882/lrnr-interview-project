@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { selectCurrentTheme } from "./Features/EditorSlice";
 import Drawer from "./Components/Drawer";
 import Navbar from "./Components/Navbar";
-import RenderOptions from "./Components/RenderOptions";
+import Menubar from "./Components/Menubar";
 import EditorContainer from "./Components/EditorContainer";
 import "./App.css";
 
@@ -24,11 +24,7 @@ const App = () => {
         isDrawerOpen={isDrawerOpen}
         handleDrawerClick={handleDrawerClick}
       />
-      <RenderOptions
-        currentTheme={currentTheme}
-        setIsTab={setIsTab}
-        isTab={isTab}
-      />
+      <Menubar currentTheme={currentTheme} setIsTab={setIsTab} isTab={isTab} />
       <div className="mx-auto d-flex p-2 ">
         <Drawer
           isDrawerOpen={isDrawerOpen}

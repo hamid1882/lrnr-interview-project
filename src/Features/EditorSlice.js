@@ -75,6 +75,8 @@ export const {
   renameFileValue,
 } = EditorSlice.actions;
 
+// Selectors
+
 export const selectCurrentEditorText = (state) => state.EditorSlice.currentText;
 export const selectAllDocuments = (state) => state.EditorSlice.documents;
 export const selectCurrentTheme = (state) => state.EditorSlice.isDarkMode;

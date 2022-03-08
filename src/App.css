@@ -20,6 +20,8 @@
 .editor {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+  width: 100%;
+  position: relative;
 }
 
 .input-custom-styles:focus {
@@ -275,6 +277,17 @@
   transform: translateX(0);
   transition: all 0.3s;
   height: 100vh;
+}
+
+.open-editor-menu {
+  transform: translateX(0%);
+  transition: all 0.4s;
+}
+
+.collapse-editor-menu {
+  position: absolute;
+  transform: translateX(-250%);
+  transition: all 0.4s;
 }
 
 @media only screen and (max-width: 650px) {
